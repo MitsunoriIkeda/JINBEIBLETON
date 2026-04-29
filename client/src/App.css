@@ -1,0 +1,90 @@
+.splash-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  gap: 40px;
+  background: radial-gradient(circle, rgba(46,11,94,1) 0%, rgba(13,2,33,1) 100%);
+}
+
+.start-btn {
+  width: 200px;
+  cursor: pointer;
+}
+
+.blink {
+  animation: blink-animation 1s steps(2, start) infinite;
+}
+
+@keyframes blink-animation {
+  to { visibility: hidden; }
+}
+
+.main-nexus {
+  display: grid;
+  grid-template-rows: 100px 1fr 150px;
+  height: 100%;
+}
+
+.nexus-header {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background: var(--panel-bg);
+  border-bottom: 2px solid var(--accent-neon);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.status-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.value-pnm {
+  font-family: 'Press Start 2P', cursive;
+  color: var(--accent-yellow);
+  font-size: 1.2rem;
+  margin-top: 5px;
+}
+
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 30px;
+  padding: 40px;
+  align-content: center;
+}
+
+.module-btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+}
+
+.module-img {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+}
+
+.nexus-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 20px 40px;
+  background: var(--panel-bg);
+  border-top: 2px solid var(--accent-pink);
+}
+
+.dancing-mascot {
+  height: 120px;
+  filter: drop-shadow(0 0 10px var(--accent-yellow));
+}
+
+.global-controls {
+  width: 200px;
+}

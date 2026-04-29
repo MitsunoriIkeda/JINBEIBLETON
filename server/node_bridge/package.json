@@ -1,0 +1,14 @@
+{
+  "name": "ableton-node-bridge",
+  "version": "1.0.0",
+  "description": "Deep Ableton Integration Bridge for AI Station",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "ableton-js": "^3.0.0",
+    "express": "^4.18.2",
+    "cors": "^2.8.5"
+  }
+}
