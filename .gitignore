@@ -36,3 +36,9 @@ client/node_modules/
 *.pth
 *.ckpt
 *.bin
+
+# Generated Assets
+client/public/samples/*
+!client/public/samples/.gitkeep
+client/public/transcriptions/*
+!client/public/transcriptions/.gitkeep
