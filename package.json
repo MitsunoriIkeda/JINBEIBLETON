@@ -1,0 +1,64 @@
+{
+  "name": "jinbeibleton",
+  "version": "1.0.0",
+  "description": "AI COCKPIT for Ableton Live by Mitsunori Ikeda",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "concurrently \"cd client && npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
+    "build": "cd client && npm run build",
+    "dist": "npm run build && electron-builder"
+  },
+  "build": {
+    "appId": "com.mitsunoriikeda.jinbeibleton",
+    "productName": "JINBEIBLETON",
+    "directories": {
+      "output": "dist-app"
+    },
+    "files": [
+      "client/dist/**/*",
+      "server/dist/jinbeibleton-server/**/*",
+      "server/node_bridge/**/*",
+      "server/node_bridge/node_modules/**/*",
+      "server/knowledge/**/*",
+      "server/orchestration/**/*.py",
+      "!server/orchestration/__pycache__/**/*",
+      "!server/venv/**/*",
+      "!server/build/**/*",
+      "!server/.hf_cache/**/*",
+      "!server/.mt3_checkpoints/**/*",
+      "!server/.pyinstaller_cache/**/*",
+      "!server/__pycache__/**/*",
+      "!server/*.pyc",
+      "!server/*.spec",
+      "!server/user_style_profile.json",
+      "!server/main.py",
+      "!server/download_local_model.py",
+      "!server/requirements.txt",
+      "electron/**/*",
+      "electron_assets/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "server/dist/**/*",
+      "server/node_bridge/**/*"
+    ],
+    "mac": {
+      "icon": "electron_assets/icon.png",
+      "target": ["dmg"],
+      "extendInfo": {
+        "NSMicrophoneUsageDescription": "This application requires microphone access to record voice commands for controlling Ableton Live."
+      }
+    },
+    "win": {
+      "icon": "electron_assets/icon.png",
+      "target": ["nsis"]
+    }
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "electron": "^28.2.0",
+    "electron-builder": "^24.9.1",
+    "wait-on": "^7.2.0"
+  }
+}

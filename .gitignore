@@ -1,0 +1,42 @@
+node_modules/
+dist-app/
+.npm-cache/
+.npm_cache/
+
+# Client dependencies
+client/node_modules/
+client/dist/
+
+# Server dependencies
+server/venv/
+server/__pycache__/
+server/*.pyc
+server/.cache/
+
+# AI Models & Checkpoints (Heavy files - MUST IGNORE)
+server/.hf_cache/
+server/.mt3_checkpoints/
+
+# Local Environment / Secrets
+.env
+*.env.local
+.vscode/
+.DS_Store
+.agent/
+
+# AI Generated Assets (Ignore samples and transcriptions)
+client/public/samples/*
+client/public/transcriptions/*
+!client/public/samples/.gitkeep
+!client/public/transcriptions/.gitkeep
+
+# Third party / Temp
+server/third_party/
+server/temp_midi/
+server/temp_audio/
+
+# Build / PyInstaller Artifacts
+server/build/
+server/dist/
+server/.pyinstaller_cache/
+**/__pycache__/

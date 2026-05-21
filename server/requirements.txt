@@ -1,0 +1,49 @@
+# ============================================
+# JINBEIBLETON - Core Server Dependencies
+# (Essentials only - optional AI packages installed separately)
+# ============================================
+
+# Web Framework
+fastapi
+uvicorn
+websockets
+pydantic
+python-multipart
+
+# HTTP & Networking
+httpx
+requests
+
+# AI / LLM
+ollama
+openai
+google-genai
+tenacity
+
+# Audio Processing
+librosa
+soundfile
+numpy
+scipy
+
+# Music / MIDI
+pretty_midi
+mido
+python-osc
+
+# Machine Learning (Core)
+torch
+torchaudio
+torchvision
+transformers
+accelerate
+safetensors
+tokenizers
+einops
+
+# Utilities
+huggingface_hub
+psutil
+PyYAML
+redis
+spotipy
