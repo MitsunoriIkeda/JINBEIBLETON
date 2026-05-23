@@ -225,6 +225,8 @@ CRITICAL RULES:
    - "ギター", "ぎたー", "Gt", "AG", "EG" -> "Guitar"
    - "シンセ", "しんせ", "Syn" -> "Synth"
    - "ボーカル", "ぼーかる", "Vox" -> "Vocal"
+   - "コーラス", "こーらす", "Chorus" -> "Chorus-Ensemble"
+   - "マッシブ", "まっしぶ", "Massive", "Native InstrumentsのMassive", "Native Instruments Massive" -> "Massive"
 4. MARKERS (ULTRA-STRICT):
    - Extract marker names EXACTLY as spoken. DO NOT translate. If the user says "サビ", the output MUST be "サビ", NOT "Chorus". If they say "2番のAメロ", the output must be "2番のAメロ".
 5. AI CO-PRODUCER SKILLS:
@@ -609,7 +611,7 @@ async def process_audio_bytes_and_command(
 
         # --- CONTROL MODE STRICT FILTER ---
         if mode == "control":
-            keywords = ["再生", "プレイ", "play", "スタート", "start", "停止", "止めて", "ストップ", "stop", "とめて", "最初から", "小節", "秒", "トラック", "作成", "追加", "削除", "ミュート", "ソロ", "録音", "レコーディング", "bpm", "テンポ", "キー", "調"]
+            keywords = ["再生", "プレイ", "play", "スタート", "start", "停止", "止めて", "ストップ", "stop", "とめて", "最初から", "小節", "秒", "トラック", "作成", "追加", "削除", "ミュート", "ソロ", "録音", "レコーディング", "bpm", "テンポ", "キー", "調", "立ち上げて", "起動", "ロード", "入れて", "挿入", "インサート", "エフェクト", "プラグイン", "音源", "コーラス", "massive", "マッシブ", "instruments"]
             if len(text) > 20 and not any(kw in text.lower() for kw in keywords):
                 print(f"🚫 [SERVER] BLOCKING NON-COMMAND CHATTER IN CONTROL MODE: '{text}'")
                 return {"status": "success", "results": []}
@@ -1281,6 +1283,11 @@ async def process_voice_command(command: VoiceCommand):
         async with httpx.AsyncClient(timeout=60.0) as http_client: # Longer timeout for AI
             for act in actions:
                 # --- FORCE MODE ADHERENCE ---
+                if command.mode == 'control':
+                    if act["action"] in ["generate_sample", "generate_midi", "generate_melody"]:
+                        print(f"🚫 [GUARD] Blocked generation action '{act['action']}' in Control Mode")
+                        continue
+
                 # --- SMART GENERATION OVERRIDE ---
                 # If the AI hallucinates the wrong generation type for the current mode, force-correct it.
                 if command.mode == 'sampler' and act["action"] in ["generate_midi", "generate_melody"]:

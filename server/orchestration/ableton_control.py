@@ -66,6 +66,19 @@ def prepare_ableton_actions(actions, text):
         actions = [a for a in actions if a.get("action") not in ["play", "play_from_bar", "play_from_marker", "play_from_time"]]
         print(f"🛡 [GUARD] Stripped redundant play commands: {actions}")
     
+    # 4. DEVICE NAME NORMALIZER: Ensure correct naming for Chorus and Massive
+    def normalize_devices(acts):
+        for a in acts:
+            if a.get("action") == "load_device" and "name" in a:
+                dev_name = str(a["name"]).lower().strip()
+                if "massive" in dev_name:
+                    a["name"] = "Massive"
+                elif dev_name in ["コーラス", "chorus", "chorus-ensemble", "chorus ensemble"]:
+                    a["name"] = "Chorus-Ensemble"
+        return acts
+
+    actions = normalize_devices(actions)
+    
     return actions
 
 async def execute_ableton_action(act, http_client, manager):
