@@ -1,6 +1,6 @@
 {
   "name": "jinbeibleton",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "AI COCKPIT for Ableton Live by Mitsunori Ikeda",
   "main": "electron/main.js",
   "scripts": {
