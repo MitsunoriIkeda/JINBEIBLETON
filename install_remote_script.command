@@ -95,6 +95,22 @@ cp -R "$MIDI_SCRIPT_SRC" "$REMOTE_SCRIPTS_DIR/AbletonJS"
 
 echo "✅ AbletonJS Remote Script installed successfully!"
 echo ""
+
+# ============================================================
+# Gatekeeper Bypass for JINBEIBLETON app
+# ============================================================
+echo "🛡  Configuring app permissions (Gatekeeper Bypass)..."
+if [ -d "/Applications/JINBEIBLETON.app" ]; then
+    echo "    Found app in /Applications. Removing macOS quarantine flags..."
+    xattr -cr "/Applications/JINBEIBLETON.app" 2>/dev/null || sudo xattr -cr "/Applications/JINBEIBLETON.app" 2>/dev/null || true
+fi
+if [ -d "$SCRIPT_DIR/JINBEIBLETON.app" ]; then
+    echo "    Found app in current directory. Removing macOS quarantine flags..."
+    xattr -cr "$SCRIPT_DIR/JINBEIBLETON.app" 2>/dev/null || true
+fi
+echo "✅ App permission setup complete!"
+echo ""
+
 echo "==========================================="
 echo "📋 NEXT STEPS - ABLETON LIVE SETTINGS"
 echo "==========================================="
