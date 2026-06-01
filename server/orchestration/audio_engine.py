@@ -17,7 +17,18 @@ except ImportError:
     pass
 
 # Redirect HF Cache
-os.environ["HF_HOME"] = os.path.abspath(os.path.join(os.getcwd(), ".hf_cache"))
+def _get_hf_cache_dir():
+    from pathlib import Path
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    ssd_dir = os.path.abspath(os.path.join(script_dir, "..")) # /server
+    local_cache = os.path.join(ssd_dir, ".hf_cache")
+    if os.path.exists(local_cache) and os.access(ssd_dir, os.W_OK):
+        return local_cache
+    home_cache = os.path.join(str(Path.home()), ".jinbeibleton", ".hf_cache")
+    os.makedirs(home_cache, exist_ok=True)
+    return home_cache
+
+os.environ["HF_HOME"] = _get_hf_cache_dir()
 
 # Dynamic Imports based on OS
 IS_MAC = platform.system() == "Darwin"
@@ -35,9 +46,20 @@ def get_local_model():
             try:
                 import gc
                 gc.collect()
-                # Ensure HF Hub loads purely from local cache to prevent network checks
-                os.environ["HF_HUB_OFFLINE"] = "1"
-                from audiocraft_mlx.models import MusicGen
+                # Only use offline mode if the model files are already cached.
+                # This allows first-time users to automatically download the models,
+                # while preventing slow network checks for subsequent runs.
+                model_cache_path = os.path.join(os.environ.get("HF_HOME", ""), "hub", "models--facebook--musicgen-stereo-medium")
+                if os.path.exists(model_cache_path) and os.listdir(model_cache_path):
+                    os.environ["HF_HUB_OFFLINE"] = "1"
+                    print("🧠 [AUDIO-MLX] Using offline cache mode for local generation.")
+                else:
+                    os.environ.pop("HF_HUB_OFFLINE", None)
+                    print("🧠 [AUDIO-MLX] Local cache empty/not found. Downloading models from Hugging Face...")
+                try:
+                    from mlx_audiocraft.models import MusicGen
+                except ImportError:
+                    from audiocraft_mlx.models import MusicGen
                 print(f"🧠 [AUDIO-MLX] Loading MusicGen (High Quality Stereo-Medium) for Mac...")
                 _mlx_model = MusicGen.get_pretrained("facebook/musicgen-stereo-medium")
             except ImportError:

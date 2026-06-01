@@ -98,14 +98,17 @@ export const useEventSubscriptions = (props: EventSubscriptionsProps) => {
                 if (data.type === 'STATUS') {
                     setStatusMessage(data.msg);
                     const upperMsg = data.msg.toUpperCase();
-                    const isActive = upperMsg.includes("LISTENING") || upperMsg.includes("ANALYZING") || 
+                    const isError = upperMsg.includes("ERROR") || upperMsg.includes("FAILED");
+                    const isActive = !isError && (
+                                     upperMsg.includes("LISTENING") || upperMsg.includes("ANALYZING") || 
                                      upperMsg.includes("GENERATING") || upperMsg.includes("COMPOSING") || 
                                      upperMsg.includes("MLX") || upperMsg.includes("LYRIA") ||
                                      upperMsg.includes("TRANSCRIBING") || upperMsg.includes("SCANNING") ||
                                      upperMsg.includes("AUDIT") || upperMsg.includes("WORKING") ||
                                      upperMsg.includes("PROCESSING") || upperMsg.includes("HEARD") ||
                                      upperMsg.includes("EXECUTING") || upperMsg.includes("BUSY") ||
-                                     upperMsg.includes("CREATING");
+                                     upperMsg.includes("CREATING")
+                                     );
                     if (isActive) {
                         p.setIsGenerating(true);
                     } else if (upperMsg.includes("READY") || upperMsg.includes("COMPLETE") || upperMsg.includes("ERROR") || upperMsg.includes("HUH")) {

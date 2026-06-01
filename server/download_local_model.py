@@ -8,8 +8,18 @@ import sys
 server_dir = os.path.dirname(os.path.abspath(__file__))
 os.chdir(server_dir)
 
-# Redirect HF Cache to our local .hf_cache directory in the server folder
-os.environ["HF_HOME"] = os.path.abspath(".hf_cache")
+# Redirect HF Cache
+def _get_hf_cache_dir():
+    from pathlib import Path
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    local_cache = os.path.join(script_dir, ".hf_cache")
+    if os.path.exists(local_cache) and os.access(script_dir, os.W_OK):
+        return local_cache
+    home_cache = os.path.join(str(Path.home()), ".jinbeibleton", ".hf_cache")
+    os.makedirs(home_cache, exist_ok=True)
+    return home_cache
+
+os.environ["HF_HOME"] = _get_hf_cache_dir()
 
 print("==================================================================")
 print("🧠 [JINBEIBLETON] Starting Local MusicGen MLX Model Downloader...")
@@ -22,7 +32,10 @@ print("------------------------------------------------------------------")
 
 try:
     print("📦 Step 1: Importing local MLX sound engine...")
-    from audiocraft_mlx.models import MusicGen
+    try:
+        from mlx_audiocraft.models import MusicGen
+    except ImportError:
+        from audiocraft_mlx.models import MusicGen
     
     print("🚀 Step 2: Downloading and caching weights (this may take a few minutes)...")
     # This will trigger huggingface_hub to fetch the real, full large files (not just 76-byte pointers)

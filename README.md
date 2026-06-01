@@ -47,40 +47,41 @@ JINBEIBLETONは、最新のAIツールとAbleton Liveをシームレスに繋ぐ
 ## 🛠️ Installation & Setup / インストールと設定
 
 ### 1. Application Install / アプリのインストール
-1. Download `JINBEIBLETON-arm64.zip` from the [Releases](https://github.com/MitsunoriIkeda/for-ableton-AI-controller/releases) page.
-2. Unzip the file to find the `JINBEIBLETON_vX.Y.Z` folder.
-3. Drag and drop `JINBEIBLETON.app` into your macOS **Applications** folder.
+1. Download `JINBEIBLETON-1.1.0-arm64.dmg` from the [Releases](https://github.com/MitsunoriIkeda/for-ableton-AI-controller/releases) page.
+2. Open the DMG file, and drag and drop `JINBEIBLETON.app` into your macOS **Applications** folder.
+3. Read the `README_SETUP.txt` included in the DMG volume for quick reference.
 
-1. [Releases](https://github.com/MitsunoriIkeda/for-ableton-AI-controller/releases) ページから `JINBEIBLETON-arm64.zip` をダウンロードします。
-2. ZIPファイルを解凍し、`JINBEIBLETON_vX.Y.Z` フォルダを取り出します。
-3. `JINBEIBLETON.app` を macOS の **「アプリケーション」** フォルダにドラッグ＆ドロップしてコピーします。
+1. [Releases](https://github.com/MitsunoriIkeda/for-ableton-AI-controller/releases) ページから `JINBEIBLETON-1.1.0-arm64.dmg` をダウンロードします。
+2. DMGファイルを開き、`JINBEIBLETON.app` を macOS の **「アプリケーション」** フォルダにドラッグ＆ドロップしてコピーします。
+3. DMGに同梱されている `README_SETUP.txt` も併せてご確認ください。
 
 ### 2. MIDI Remote Script Setup / MIDIスクリプトの設定
-To sync the app with Ableton Live, you need to install the custom MIDI Remote Script.
-アプリとAbleton Liveを同期するために、専用のMIDIリモートスクリプトを配置する必要があります。
+JINBEIBLETON seamlessly automates the MIDI Remote Script installation:
+JINBEIBLETONは、接続に必要なMIDIリモートスクリプトの配置を完全に自動化しています：
 
-- **Automatic Install / 自動インストール**:
-  Run the `install_midi_script.sh` included in the unzipped folder.
-  解凍したフォルダ内にある `install_midi_script.sh` を実行すると自動で配置されます。
-
-- **Manual Install / 手動インストール**:
-  Copy the `midi-script/JINBEIBLETON` folder to the following location depending on your Live version:  
-  お使いのLiveのバージョンに合わせて、`midi-script/JINBEIBLETON` フォルダを以下の場所に直接コピーしてください：
-  
-  - **Ableton Live 11**:  
-    `/Applications/Ableton Live 11 Suite.app/Contents/App-Resources/MIDI Remote Scripts/`  
-    *(Right-click Ableton Live app -> "Show Package Contents" to navigate / アプリを右クリックして「パッケージの内容を表示」から開きます)*
-  - **Ableton Live 12**:  
-    `/Users/[YourUsername]/Music/Ableton/User Library/Remote Scripts/`
+- **Automatic Setup / 自動セットアップ**:
+  Simply launch the installed `JINBEIBLETON` app. Upon booting up, it will automatically copy the required `AbletonJS` MIDI Remote Script directly into your User Library (`~/Music/Ableton/User Library/Remote Scripts/AbletonJS`). No manual scripts or terminal command executions are required!
+  インストールした `JINBEIBLETON` アプリを起動するだけで、接続スクリプトである `AbletonJS` フォルダが自動的にユーザーライブラリ（`~/Music/Ableton/User Library/Remote Scripts/AbletonJS`）に配置されます。手動でのコピーやコマンド実行は一切不要です！
 
 ### 3. Ableton Live Preferences / Ableton Live側の設定
-1. Open Ableton Live's **Preferences** (`Command + ,`) and go to the **Link/Tempo/MIDI** (or **MIDI**) tab.
-2. Under **Control Surfaces**, select **`JINBEIBLETON`** from the dropdown list.
-3. Set the Input and Output ports to the virtual MIDI port automatically created by the JINBEIBLETON app.
+1. Open (or restart) Ableton Live.
+2. Open Preferences/Settings (`Command + ,`) and go to the **Link/Tempo/MIDI** tab.
+3. Under **Control Surface**, select **`AbletonJS`** from the dropdown list.
+4. Input and Output columns can be left as **None** (JINBEIBLETON communicates directly using UDP sockets, not standard MIDI).
+5. Close Settings. The top-right indicator should display `✅ Ableton Connected`.
 
-1. Ableton Liveの **環境設定** (`Command + ,`) を開き、**Link/Tempo/MIDI**（または **MIDI**）タブを選択します。
-2. **コントロールサーフェス** の一覧から、**`JINBEIBLETON`** を選択します。
-3. 入力および出力を、JINBEIBLETONアプリが自動生成する仮想MIDIポートに設定します。
+1. Ableton Live を起動（または再起動）します。
+2. Ableton Liveの **環境設定** (`Command + ,`) を開き、**Link/Tempo/MIDI** タブを選択します。
+3. **コントロールサーフェス** の一覧から、**`AbletonJS`** を選択します。
+4. 入力（Input）および出力（Output）のポートは **「なし (None)」** のままで構いません（JINBEIBLETONはMIDIではなくUDPソケット経由で通信します）。
+5. 設定画面を閉じます。アプリの右上に `✅ Ableton Connected` と表示されれば接続完了です！
+
+### 4. Local AI Music Gen (MLX Engine) First-Use / ローカルAI生成の初回利用について
+- When you run sample generation in **LOCAL (MLX)** engine for the first time, JINBEIBLETON will automatically download the high-fidelity weights (~3.5GB) from Hugging Face to `~/.jinbeibleton/.hf_cache` in the background.
+- This is a one-time download. Once cached, all subsequent local music generations run 100% offline and execute instantly.
+
+- **LOCAL (MLX)** エンジンでのサンプル生成を初めて行う際、バックグラウンドで自動的にHugging Faceから高精度モデル（約3.5GB）を `~/.jinbeibleton/.hf_cache` へダウンロードします。
+- このダウンロードは初回1回のみです。一度キャッシュされれば、2回目以降は完全オフライン・通信なしで瞬時に生成が行われます。
 
 ---
 

@@ -79,6 +79,12 @@ try:
     hiddenimports += collect_submodules('mlx_whisper')
     hiddenimports += collect_submodules('mlx_lm')
     datas += collect_data_files('mlx_whisper')
+    
+    # MLX MusicGen deps
+    import mlx_audiocraft
+    hiddenimports += collect_submodules('mlx_audiocraft')
+    hiddenimports += collect_submodules('omegaconf')
+    hiddenimports += collect_submodules('sentencepiece')
 except ImportError:
     pass
 

@@ -233,6 +233,47 @@ function createWindow() {
   });
 }
 
+function ensureRemoteScriptInstalled(bridgePath) {
+  try {
+    const os = require('os');
+    if (process.platform !== 'darwin') return; // macOS only auto-installation
+
+    const userRemoteScriptsDir = path.join(os.homedir(), "Music/Ableton/User Library/Remote Scripts");
+    const targetDir = path.join(userRemoteScriptsDir, "AbletonJS");
+
+    // Resolve source midi-script folder
+    let midiScriptSrc = "";
+    // Candidate 1: Workspace root midi-script (development)
+    const devSrc = path.join(fallbackWorkspace, 'midi-script');
+    // Candidate 2: Bundled node_modules ableton-js midi-script (packaged)
+    const prodSrc = path.join(bridgePath, 'node_modules/ableton-js/midi-script');
+
+    if (fs.existsSync(devSrc)) {
+      midiScriptSrc = devSrc;
+    } else if (fs.existsSync(prodSrc)) {
+      midiScriptSrc = prodSrc;
+    }
+
+    if (!midiScriptSrc) {
+      console.warn("⚠️ [Electron-Setup] midi-script source directory not found. Skipping auto-installation.");
+      return;
+    }
+
+    console.log(`📦 [Electron-Setup] Auto-installing AbletonJS Remote Script from ${midiScriptSrc} to ${targetDir}`);
+    
+    if (fs.existsSync(targetDir)) {
+      fs.rmSync(targetDir, { recursive: true, force: true });
+    }
+    
+    fs.mkdirSync(userRemoteScriptsDir, { recursive: true });
+    fs.cpSync(midiScriptSrc, targetDir, { recursive: true });
+    
+    console.log("✅ [Electron-Setup] AbletonJS Remote Script auto-installed successfully!");
+  } catch (err) {
+    console.error("❌ [Electron-Setup] Failed to auto-install AbletonJS Remote Script:", err);
+  }
+}
+
 function startBackends() {
   try {
     const logDir = useDevWorkspace 
@@ -270,6 +311,9 @@ function startBackends() {
       pythonPath = null; // Will be resolved below
       serverPath = path.join(unpackedDir, 'server');
     }
+
+    // Call our auto-installer helper
+    ensureRemoteScriptInstalled(bridgePath);
 
     // Resolve node path for GUI launches (which lack standard terminal PATH)
     let nodePath = 'node';
