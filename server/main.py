@@ -55,6 +55,32 @@ def ensure_giantmidi_model():
         except Exception as e:
             print(f"❌ [SYSTEM] Failed to download model: {e}")
 
+def get_ffmpeg_path():
+    # macOS Electron bundled apps often run without standard PATH (missing Homebrew /opt/homebrew/bin, etc.).
+    # We must explicitly look for ffmpeg in standard directories and update PATH.
+    extra_paths = ["/opt/homebrew/bin", "/usr/local/bin", "/usr/bin", "/bin"]
+    
+    current_path = os.environ.get("PATH", "")
+    current_dirs = current_path.split(os.pathsep)
+    path_updated = False
+    for p in extra_paths:
+        if p not in current_dirs:
+            current_dirs.insert(0, p)
+            path_updated = True
+    if path_updated:
+        os.environ["PATH"] = os.pathsep.join(current_dirs)
+        
+    ffmpeg_bin = shutil.which("ffmpeg")
+    if ffmpeg_bin:
+        return ffmpeg_bin
+        
+    for p in extra_paths:
+        candidate = os.path.join(p, "ffmpeg")
+        if os.path.exists(candidate) and os.path.access(candidate, os.X_OK):
+            return candidate
+            
+    return "ffmpeg"
+
 cached_input_channels = None
 
 def get_default_input_channels():
@@ -66,17 +92,19 @@ def get_default_input_channels():
         static_ffmpeg.add_paths()
         import re
         
+        ffmpeg_bin = get_ffmpeg_path()
+        
         # Test which sample rate works to prevent I/O Error
         detected_rate = None
         for rate in ["48000", "44100", "96000", "88200"]:
-            test_cmd = ["ffmpeg", "-f", "avfoundation", "-sample_rate", rate, "-i", ":default", "-t", "0.1", "-f", "null", "-"]
+            test_cmd = [ffmpeg_bin, "-f", "avfoundation", "-sample_rate", rate, "-i", ":default", "-t", "0.1", "-f", "null", "-"]
             test_proc = subprocess.run(test_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, timeout=1.0)
             if "Input/output error" not in test_proc.stderr and "Error opening input" not in test_proc.stderr:
                 detected_rate = rate
                 break
                 
         rate_opts = ["-sample_rate", detected_rate] if detected_rate else []
-        cmd = ["ffmpeg", "-f", "avfoundation"] + rate_opts + ["-i", ":default", "-t", "0.5", "-f", "null", "-"]
+        cmd = [ffmpeg_bin, "-f", "avfoundation"] + rate_opts + ["-i", ":default", "-t", "0.5", "-f", "null", "-"]
         proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=2.0)
         match = re.search(r"(\d+)\s+channels", proc.stderr)
         if match:
@@ -95,9 +123,10 @@ def get_default_input_channels():
 def detect_working_sample_rate():
     # Detect the working sample rate of the default input device
     rates = ["48000", "44100", "96000", "88200"]
+    ffmpeg_bin = get_ffmpeg_path()
     for rate in rates:
         try:
-            cmd = ["ffmpeg", "-y", "-f", "avfoundation", "-sample_rate", rate, "-i", ":default", "-t", "0.1", "-f", "null", "-"]
+            cmd = [ffmpeg_bin, "-y", "-f", "avfoundation", "-sample_rate", rate, "-i", ":default", "-t", "0.1", "-f", "null", "-"]
             proc = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, timeout=1.0)
             if "Input/output error" not in proc.stderr and "Error opening input" not in proc.stderr:
                 print(f"🎙 [AUDIO AUTO-DETECT] Successfully verified input sample rate: {rate} Hz")
@@ -706,13 +735,14 @@ async def start_voice_recording():
     detected_rate = detect_working_sample_rate()
     rate_opts = ["-sample_rate", detected_rate] if detected_rate else []
     channels = get_default_input_channels()
+    ffmpeg_bin = get_ffmpeg_path()
     
     if channels >= 2:
         # Multi-channel: mix both primary front ports (c0 + c1) to mono, ignoring remaining silent ports
-        cmd = ["ffmpeg", "-y", "-f", "avfoundation"] + rate_opts + ["-i", ":default", "-af", "pan=mono|c0=c0+c1", "-ar", "16000", "-ac", "1", "-f", "s16le", "-flush_packets", "1", recording_filepath]
+        cmd = [ffmpeg_bin, "-y", "-f", "avfoundation"] + rate_opts + ["-i", ":default", "-af", "pan=mono|c0=c0+c1", "-ar", "16000", "-ac", "1", "-f", "s16le", "-flush_packets", "1", recording_filepath]
     else:
         # Single channel: capture standard mono
-        cmd = ["ffmpeg", "-y", "-f", "avfoundation"] + rate_opts + ["-i", ":default", "-ar", "16000", "-ac", "1", "-f", "s16le", "-flush_packets", "1", recording_filepath]
+        cmd = [ffmpeg_bin, "-y", "-f", "avfoundation"] + rate_opts + ["-i", ":default", "-ar", "16000", "-ac", "1", "-f", "s16le", "-flush_packets", "1", recording_filepath]
         
     print(f"🎙 [BACKEND REC] Starting native mic recording to {recording_filepath}...")
     # Set stderr=None to print ffmpeg error logs directly to the console for debugging
@@ -819,7 +849,8 @@ async def stop_voice_recording(
     # Convert the unbuffered raw PCM file into a standard WAV file for STT/Whisper
     wav_filepath = recording_filepath.replace(".raw", ".wav")
     try:
-        conv_cmd = ["ffmpeg", "-y", "-f", "s16le", "-ar", "16000", "-ac", "1", "-i", recording_filepath, wav_filepath]
+        ffmpeg_bin = get_ffmpeg_path()
+        conv_cmd = [ffmpeg_bin, "-y", "-f", "s16le", "-ar", "16000", "-ac", "1", "-i", recording_filepath, wav_filepath]
         subprocess.run(conv_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     except Exception as conv_err:
         print(f"❌ [BACKEND REC] Failed to convert RAW to WAV: {conv_err}")
