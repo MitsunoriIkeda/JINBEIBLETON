@@ -715,11 +715,11 @@ async def start_voice_recording():
         cmd = ["ffmpeg", "-y", "-f", "avfoundation"] + rate_opts + ["-i", ":default", "-ar", "16000", "-ac", "1", "-f", "s16le", "-flush_packets", "1", recording_filepath]
         
     print(f"🎙 [BACKEND REC] Starting native mic recording to {recording_filepath}...")
-    # DEVNULL on stdout/stderr completely prevents any OS pipe buffering hang/blockage!
+    # Set stderr=None to print ffmpeg error logs directly to the console for debugging
     recording_process = subprocess.Popen(
         cmd,
         stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
+        stderr=None,
         stdin=subprocess.PIPE
     )
     
