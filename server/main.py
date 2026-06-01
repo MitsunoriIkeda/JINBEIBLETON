@@ -65,7 +65,18 @@ def get_default_input_channels():
         import static_ffmpeg
         static_ffmpeg.add_paths()
         import re
-        cmd = ["ffmpeg", "-f", "avfoundation", "-sample_rate", "48000", "-i", ":default", "-t", "0.5", "-f", "null", "-"]
+        
+        # Test which sample rate works to prevent I/O Error
+        detected_rate = None
+        for rate in ["48000", "44100", "96000", "88200"]:
+            test_cmd = ["ffmpeg", "-f", "avfoundation", "-sample_rate", rate, "-i", ":default", "-t", "0.1", "-f", "null", "-"]
+            test_proc = subprocess.run(test_cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, timeout=1.0)
+            if "Input/output error" not in test_proc.stderr and "Error opening input" not in test_proc.stderr:
+                detected_rate = rate
+                break
+                
+        rate_opts = ["-sample_rate", detected_rate] if detected_rate else []
+        cmd = ["ffmpeg", "-f", "avfoundation"] + rate_opts + ["-i", ":default", "-t", "0.5", "-f", "null", "-"]
         proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=2.0)
         match = re.search(r"(\d+)\s+channels", proc.stderr)
         if match:
@@ -80,6 +91,22 @@ def get_default_input_channels():
         print(f"Error checking input channels: {e}")
     cached_input_channels = 2  # Default to stereo/2 channels
     return 2
+
+def detect_working_sample_rate():
+    # Detect the working sample rate of the default input device
+    rates = ["48000", "44100", "96000", "88200"]
+    for rate in rates:
+        try:
+            cmd = ["ffmpeg", "-y", "-f", "avfoundation", "-sample_rate", rate, "-i", ":default", "-t", "0.1", "-f", "null", "-"]
+            proc = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, timeout=1.0)
+            if "Input/output error" not in proc.stderr and "Error opening input" not in proc.stderr:
+                print(f"🎙 [AUDIO AUTO-DETECT] Successfully verified input sample rate: {rate} Hz")
+                return rate
+        except Exception as e:
+            print(f"⚠️ [AUDIO AUTO-DETECT] Failed checking {rate} Hz: {e}")
+            continue
+    print("🎙 [AUDIO AUTO-DETECT] Falling back to system default (no rate specifier)")
+    return None
 
 from contextlib import asynccontextmanager
 
@@ -675,15 +702,17 @@ async def start_voice_recording():
     # Save as raw PCM first to allow real-time unbuffered disk writing
     recording_filepath = os.path.join(temp_dir, f"jinbeibleton_rec_{int(time.time())}.raw")
     
-    # Dynamic channel detection to build perfect downmix / pan filter
+    # Dynamic channel and sample rate detection to build perfect downmix / pan filter
+    detected_rate = detect_working_sample_rate()
+    rate_opts = ["-sample_rate", detected_rate] if detected_rate else []
     channels = get_default_input_channels()
     
     if channels >= 2:
         # Multi-channel: mix both primary front ports (c0 + c1) to mono, ignoring remaining silent ports
-        cmd = ["ffmpeg", "-y", "-f", "avfoundation", "-sample_rate", "48000", "-i", ":default", "-af", "pan=mono|c0=c0+c1", "-ar", "16000", "-ac", "1", "-f", "s16le", "-flush_packets", "1", recording_filepath]
+        cmd = ["ffmpeg", "-y", "-f", "avfoundation"] + rate_opts + ["-i", ":default", "-af", "pan=mono|c0=c0+c1", "-ar", "16000", "-ac", "1", "-f", "s16le", "-flush_packets", "1", recording_filepath]
     else:
         # Single channel: capture standard mono
-        cmd = ["ffmpeg", "-y", "-f", "avfoundation", "-sample_rate", "48000", "-i", ":default", "-ar", "16000", "-ac", "1", "-f", "s16le", "-flush_packets", "1", recording_filepath]
+        cmd = ["ffmpeg", "-y", "-f", "avfoundation"] + rate_opts + ["-i", ":default", "-ar", "16000", "-ac", "1", "-f", "s16le", "-flush_packets", "1", recording_filepath]
         
     print(f"🎙 [BACKEND REC] Starting native mic recording to {recording_filepath}...")
     # DEVNULL on stdout/stderr completely prevents any OS pipe buffering hang/blockage!
