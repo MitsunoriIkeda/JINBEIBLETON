@@ -56,8 +56,29 @@ def ensure_giantmidi_model():
             print(f"❌ [SYSTEM] Failed to download model: {e}")
 
 def get_ffmpeg_path():
-    # macOS Electron bundled apps often run without standard PATH (missing Homebrew /opt/homebrew/bin, etc.).
-    # We must explicitly look for ffmpeg in standard directories and update PATH.
+    import sys
+    # 1. Check if running inside PyInstaller bundle (frozen)
+    if getattr(sys, 'frozen', False):
+        bundle_dir = getattr(sys, '_MEIPASS', os.path.dirname(sys.executable))
+        for subpath in ["ffmpeg", os.path.join("_internal", "ffmpeg")]:
+            bundle_ffmpeg = os.path.join(bundle_dir, subpath)
+            if os.path.exists(bundle_ffmpeg) and os.path.access(bundle_ffmpeg, os.X_OK):
+                print(f"🎙 [AUDIO] Using PyInstaller bundled ffmpeg: {bundle_ffmpeg}")
+                return bundle_ffmpeg
+            
+        exec_dir = os.path.dirname(sys.executable)
+        for subpath in ["ffmpeg", os.path.join("_internal", "ffmpeg")]:
+            exec_ffmpeg = os.path.join(exec_dir, subpath)
+            if os.path.exists(exec_ffmpeg) and os.path.access(exec_ffmpeg, os.X_OK):
+                print(f"🎙 [AUDIO] Using executable-relative ffmpeg: {exec_ffmpeg}")
+                return exec_ffmpeg
+
+    # 2. Check local development bin/ffmpeg
+    local_ffmpeg = os.path.join(os.path.dirname(__file__), "bin", "ffmpeg")
+    if os.path.exists(local_ffmpeg) and os.path.access(local_ffmpeg, os.X_OK):
+        return local_ffmpeg
+
+    # 3. Fallback: Search standard macOS PATH directories (Homebrew Apple Silicon & Intel)
     extra_paths = ["/opt/homebrew/bin", "/usr/local/bin", "/usr/bin", "/bin"]
     
     current_path = os.environ.get("PATH", "")

@@ -95,7 +95,7 @@ except ImportError:
 a = Analysis(
     ['main.py'],
     pathex=[os.path.abspath('.')],
-    binaries=[],
+    binaries=[('bin/ffmpeg', '.')],
     datas=datas,
     hiddenimports=hiddenimports,
     hookspath=[],
