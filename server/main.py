@@ -2,6 +2,8 @@ import asyncio
 import io
 import json
 import os
+# Ensure Homebrew and standard local bins are in PATH for ffmpeg and other tools
+os.environ["PATH"] += os.pathsep + "/opt/homebrew/bin:/usr/local/bin"
 import copy
 import httpx
 import ollama

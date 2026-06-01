@@ -40,3 +40,5 @@ server/build/
 server/dist/
 server/.pyinstaller_cache/
 **/__pycache__/
+JINBEIBLETON_Release_*/
+server/scratch/
