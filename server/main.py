@@ -65,7 +65,7 @@ def get_default_input_channels():
         import static_ffmpeg
         static_ffmpeg.add_paths()
         import re
-        cmd = ["ffmpeg", "-f", "avfoundation", "-i", ":default", "-t", "0.5", "-f", "null", "-"]
+        cmd = ["ffmpeg", "-f", "avfoundation", "-sample_rate", "48000", "-i", ":default", "-t", "0.5", "-f", "null", "-"]
         proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=2.0)
         match = re.search(r"(\d+)\s+channels", proc.stderr)
         if match:
@@ -680,10 +680,10 @@ async def start_voice_recording():
     
     if channels >= 2:
         # Multi-channel: mix both primary front ports (c0 + c1) to mono, ignoring remaining silent ports
-        cmd = ["ffmpeg", "-y", "-f", "avfoundation", "-i", ":default", "-af", "pan=mono|c0=c0+c1", "-ar", "16000", "-ac", "1", "-f", "s16le", "-flush_packets", "1", recording_filepath]
+        cmd = ["ffmpeg", "-y", "-f", "avfoundation", "-sample_rate", "48000", "-i", ":default", "-af", "pan=mono|c0=c0+c1", "-ar", "16000", "-ac", "1", "-f", "s16le", "-flush_packets", "1", recording_filepath]
     else:
         # Single channel: capture standard mono
-        cmd = ["ffmpeg", "-y", "-f", "avfoundation", "-i", ":default", "-ar", "16000", "-ac", "1", "-f", "s16le", "-flush_packets", "1", recording_filepath]
+        cmd = ["ffmpeg", "-y", "-f", "avfoundation", "-sample_rate", "48000", "-i", ":default", "-ar", "16000", "-ac", "1", "-f", "s16le", "-flush_packets", "1", recording_filepath]
         
     print(f"🎙 [BACKEND REC] Starting native mic recording to {recording_filepath}...")
     # DEVNULL on stdout/stderr completely prevents any OS pipe buffering hang/blockage!
