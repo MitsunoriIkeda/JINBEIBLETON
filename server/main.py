@@ -141,7 +141,12 @@ def get_default_input_channels():
     cached_input_channels = 2  # Default to stereo/2 channels
     return 2
 
+cached_sample_rate = None
+
 def detect_working_sample_rate():
+    global cached_sample_rate
+    if cached_sample_rate is not None:
+        return cached_sample_rate
     # Detect the working sample rate of the default input device
     rates = ["48000", "44100", "96000", "88200"]
     ffmpeg_bin = get_ffmpeg_path()
@@ -151,12 +156,20 @@ def detect_working_sample_rate():
             proc = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, text=True, timeout=1.0)
             if "Input/output error" not in proc.stderr and "Error opening input" not in proc.stderr:
                 print(f"🎙 [AUDIO AUTO-DETECT] Successfully verified input sample rate: {rate} Hz")
+                cached_sample_rate = rate
                 return rate
         except Exception as e:
             print(f"⚠️ [AUDIO AUTO-DETECT] Failed checking {rate} Hz: {e}")
             continue
     print("🎙 [AUDIO AUTO-DETECT] Falling back to system default (no rate specifier)")
     return None
+
+def warmup_audio_devices():
+    # Warmup both channel detection and sample rate check to eliminate recording latency
+    print("🎙 [AUDIO WARMUP] Initializing audio device detection cache...")
+    get_default_input_channels()
+    detect_working_sample_rate()
+    print("🎙 [AUDIO WARMUP] Audio device caching completed successfully.")
 
 from contextlib import asynccontextmanager
 
@@ -165,7 +178,7 @@ async def lifespan(app: FastAPI):
     # Startup logic
     print("🚀 [SYSTEM] Cockpit Backend Starting...")
     import threading
-    threading.Thread(target=get_default_input_channels, daemon=True).start()
+    threading.Thread(target=warmup_audio_devices, daemon=True).start()
     yield
     # Shutdown logic
     print("🛑 [SYSTEM] Cockpit Backend Shutting Down...")
