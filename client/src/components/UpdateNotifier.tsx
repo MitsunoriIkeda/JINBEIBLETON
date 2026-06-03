@@ -7,7 +7,7 @@ interface UpdateMetadata {
     release_notes?: string;
 }
 
-const CURRENT_VERSION = "1.0.0"; // Hardcoded current app version
+const CURRENT_VERSION = "1.1.0"; // Hardcoded current app version
 const UPDATE_CHECK_URL = "https://raw.githubusercontent.com/MitsunoriIkeda/for-ableton-AI-controller/main/version.json";
 
 export const UpdateNotifier: React.FC = () => {
