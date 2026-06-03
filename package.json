@@ -51,6 +51,7 @@
       }
     },
     "dmg": {
+      "title": "JINBEIBLETON Installer",
       "background": "electron_assets/dmg_background.png",
       "iconSize": 120,
       "window": {

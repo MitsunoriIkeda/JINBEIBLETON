@@ -48,6 +48,8 @@ if [ ! -f "$VENV_PYTHON" ] || ! "$VENV_PYTHON" -c "$VENV_CHECK" &>/dev/null; the
         ./venv/bin/pip install mlx mlx-lm coremltools 2>/dev/null || echo "⚠️  MLX packages skipped"
         echo "📦 Installing local speech recognition (mlx-whisper)..."
         ./venv/bin/pip install mlx-whisper 2>/dev/null || echo "⚠️  mlx-whisper skipped"
+        echo "📦 Installing local music generation (mlx-audiocraft & sentencepiece)..."
+        ./venv/bin/pip install mlx-audiocraft sentencepiece 2>/dev/null || echo "⚠️  mlx-audiocraft skipped"
         if [ -d "musicgen-mlx-main" ]; then
             ./venv/bin/pip install ./musicgen-mlx-main 2>/dev/null || echo "⚠️  musicgen-mlx skipped"
         fi
