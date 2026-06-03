@@ -18,9 +18,9 @@ JINBEIBLETONをご利用いただきありがとうございます！
 
    この場合、以下の手順で自動解除して起動してください：
      ① 警告ダイアログで【キャンセル】をクリックして閉じます（※ゴミ箱に入れないでください）。
-     ② DMGウィンドウ（この画面）に同梱されている『JINBEIBLETON起動アシスタント.command』をダブルクリックします。
+     ② DMGウィンドウ（この画面）に同梱されている『StartApp.command』をダブルクリックします。
      ③ 黒いターミナル画面が開きます。もしここでも警告が出た場合は、ダイアログをキャンセルした後に、Macの「システム設定」＞「プライバシーとセキュリティ」の一番下にある【このまま開く】ボタンをクリックしてください。
-     ④ 起動アシスタントが自動的にセキュリティ制限を解除し、アプリを正常起動させます。
+     ④ このツールが自動的にセキュリティ制限を解除し、アプリを正常起動させます。
      （※ この操作は最初の1回のみ必要です。2回目以降は、アプリケーションフォルダ内の「JINBEIBLETON」アプリをダブルクリックするだけで直接起動できるようになります）
 
 2. **【自動化】** アプリが起動すると、Ableton Liveに必要な接続スクリプト（AbletonJS）が自動的にユーザーの「User Library/Remote Scripts」に配置されます！手動でコピーする必要はありません。
@@ -53,9 +53,9 @@ To allow the AI to control Ableton Live, you need to set up the connection by fo
 
    To resolve this automatically, please follow these steps:
      ① Click [Cancel] on the warning dialog (do NOT move it to the Trash).
-     ② Double-click the file named 『JINBEIBLETON起動アシスタント.command』 included in this DMG window.
+     ② Double-click the file named 『StartApp.command』 included in this DMG window.
      ③ A black Terminal window will open. If you see a developer warning here, cancel it, go to your Mac's [System Settings] > [Privacy & Security], scroll to the bottom, and click 【Open Anyway】.
-     ④ The startup assistant will automatically clear the quarantine block and launch the application.
+     ④ The helper tool will automatically clear the quarantine block and launch the application.
      (Note: This is a one-time setup. Afterwards, you can launch the JINBEIBLETON app directly from the Applications folder.)
 
 2. **[Automated]** Upon launching, JINBEIBLETON will automatically copy the required AbletonJS MIDI Remote Script folder into your User Library. No manual script installation is needed!

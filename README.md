@@ -49,12 +49,12 @@ JINBEIBLETONは、最新のAIツールとAbleton Liveをシームレスに繋ぐ
 ### 1. Application Install / アプリのインストール
 1. Download `JINBEIBLETON-1.1.0-arm64.dmg` from the [Releases](https://github.com/MitsunoriIkeda/for-ableton-AI-controller/releases) page.
 2. Open the DMG file, and drag and drop `JINBEIBLETON.app` into your macOS **Applications** folder.
-3. If macOS displays an error saying the app **"is damaged and can't be opened"**, double-click **`JINBEIBLETON起動アシスタント.command`** in the DMG volume. It will automatically bypass the Gatekeeper blocks and launch the app for you.
+3. If macOS displays an error saying the app **"is damaged and can't be opened"**, double-click **`StartApp.command`** in the DMG volume. It will automatically bypass the Gatekeeper blocks and launch the app for you.
 4. Read the `README_SETUP.txt` included in the DMG volume for details.
 
 1. [Releases](https://github.com/MitsunoriIkeda/for-ableton-AI-controller/releases) ページから `JINBEIBLETON-1.1.0-arm64.dmg` をダウンロードします。
 2. DMGファイルを開き、`JINBEIBLETON.app` を macOS の **「アプリケーション」** フォルダにドラッグ＆ドロップしてコピーします。
-3. 初回起動時に **「"JINBEIBLETON"は破損しているため開けません」** というエラーが出る（またはシステム設定に「このまま開く」が表示されない）場合は、DMGに同梱されている **`JINBEIBLETON起動アシスタント.command`** をダブルクリックして起動してください。セキュリティブロックを自動解除してアプリを立ち上げます。
+3. 初回起動時に **「"JINBEIBLETON"は破損しているため開けません」** というエラーが出る（またはシステム設定に「このまま開く」が表示されない）場合は、DMGに同梱されている **`StartApp.command`** をダブルクリックして起動してください。セキュリティブロックを自動解除してアプリを立ち上げます。
 4. 詳細はDMGに同梱されている `README_SETUP.txt` をご確認ください。
 
 ### 2. MIDI Remote Script Setup / MIDIスクリプトの設定
