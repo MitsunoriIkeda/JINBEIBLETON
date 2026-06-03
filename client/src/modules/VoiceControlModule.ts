@@ -78,8 +78,7 @@ export class VoiceControlModule {
             case 'GENERATE_SAMPLE': eventBus.emit(EVENTS.TRIGGER_SAMPLE_GEN, params.prompt || params.musical_description); break;
             case 'GENERATE_MIDI': eventBus.emit(EVENTS.TRIGGER_MIDI_GEN, params.prompt || params.style); break;
             case 'PLAY_FROM_MARKER': eventBus.emit((EVENTS as any).JUMP_TO_MARKER || 'JUMP_TO_MARKER', params.name); break;
-            case 'LOAD_DEVICE': eventBus.emit(EVENTS.TRIGGER_SOUND_PALETTE); break;
-            case 'PLAY': case 'STOP': case 'RECORD': break;
+            case 'LOAD_DEVICE': case 'PLAY': case 'STOP': case 'RECORD': break;
             default: console.warn(`Unknown action: ${normalizedAction}`);
         }
     }
