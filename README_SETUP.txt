@@ -13,15 +13,15 @@ JINBEIBLETONをご利用いただきありがとうございます！
 ■ ステップ 2: アプリの起動とセキュリティ制限の解除
 1. アプリケーションフォルダに配置した「JINBEIBLETON」アプリを起動します。
 
-   ⚠️ 【重要】初回起動時のセキュリティ警告について：
-   macOSのセキュリティ保護（Gatekeeper）により、起動時に「"JINBEIBLETON"は破損しているため開けません。ゴミ箱に入れる必要があります」や「開発元が未確認のため開けません」という警告ダイアログが表示されることがあります。
-   これはアプリが実際に壊れているわけではなく、インターネットから取得した未署名アプリに対するmacOSの一般的な保護動作です。
-   以下の手順で安全に起動できます：
-     ① 警告が出たら「キャンセル」をクリックして閉じます（※ゴミ箱には移動しないでください）。
-     ② Macの「システム設定」＞「プライバシーとセキュリティ」を開きます。
-     ③ 画面を下へスクロールし、セキュリティ欄にある「"JINBEIBLETON"は開発元を確認できないため、開くのがブロックされました」という表示の右側にある【このまま開く】ボタンをクリックします。
-     ④ パスワードまたはTouch IDで許可し、再度現れる警告画面で【開く】をクリックします。
-     （※ この操作は初回のみ必要で、2回目以降は通常通り起動できます）
+   ⚠️ 【重要】「破損しているため開けません」と警告が出る場合：
+   macOSのセキュリティ（Gatekeeper）の仕様により、初回起動時に「"JINBEIBLETON"は破損しているため開けません」という警告ダイアログが出て起動できず、さらにシステム設定画面にも「このまま開く」ボタンが表示されないことがあります。
+
+   この場合、以下の手順で自動解除して起動してください：
+     ① 警告ダイアログで【キャンセル】をクリックして閉じます（※ゴミ箱に入れないでください）。
+     ② DMGウィンドウ（この画面）に同梱されている『JINBEIBLETON起動アシスタント.command』をダブルクリックします。
+     ③ 黒いターミナル画面が開きます。もしここでも警告が出た場合は、ダイアログをキャンセルした後に、Macの「システム設定」＞「プライバシーとセキュリティ」の一番下にある【このまま開く】ボタンをクリックしてください。
+     ④ 起動アシスタントが自動的にセキュリティ制限を解除し、アプリを正常起動させます。
+     （※ この操作は最初の1回のみ必要です。2回目以降は、アプリケーションフォルダ内の「JINBEIBLETON」アプリをダブルクリックするだけで直接起動できるようになります）
 
 2. **【自動化】** アプリが起動すると、Ableton Liveに必要な接続スクリプト（AbletonJS）が自動的にユーザーの「User Library/Remote Scripts」に配置されます！手動でコピーする必要はありません。
 3. 次に、Ableton Live を起動（または再起動）してください。
@@ -48,16 +48,15 @@ To allow the AI to control Ableton Live, you need to set up the connection by fo
 ■ Step 2: Launch App & Resolve Security Warning
 1. Launch the "JINBEIBLETON" app from the Applications folder.
 
-   ⚠️ [CRITICAL] Handling macOS Gatekeeper Warning:
-   Because this app is self-signed, on first launch macOS may show a warning saying:
-   ""JINBEIBLETON" is damaged and can't be opened. You should move it to the Trash." or
-   ""JINBEIBLETON" cannot be opened because the developer cannot be verified."
-   The app is NOT actually damaged. Please follow these steps to open it:
-     ① Click [Cancel] on the dialog (do NOT move it to the Trash).
-     ② Open your Mac's [System Settings] > [Privacy & Security].
-     ③ Scroll down to the "Security" section, find the message about JINBEIBLETON being blocked, and click the 【Open Anyway】 button next to it.
-     ④ Enter your password/Touch ID, and click 【Open】 on the final confirmation dialog.
-     (Note: This is only required on the very first launch.)
+   ⚠️ [CRITICAL] If macOS says "is damaged and can't be opened":
+   Due to macOS Gatekeeper policies, you may see a warning saying JINBEIBLETON is "damaged" and cannot be opened, and the "Open Anyway" button might NOT appear in System Settings.
+
+   To resolve this automatically, please follow these steps:
+     ① Click [Cancel] on the warning dialog (do NOT move it to the Trash).
+     ② Double-click the file named 『JINBEIBLETON起動アシスタント.command』 included in this DMG window.
+     ③ A black Terminal window will open. If you see a developer warning here, cancel it, go to your Mac's [System Settings] > [Privacy & Security], scroll to the bottom, and click 【Open Anyway】.
+     ④ The startup assistant will automatically clear the quarantine block and launch the application.
+     (Note: This is a one-time setup. Afterwards, you can launch the JINBEIBLETON app directly from the Applications folder.)
 
 2. **[Automated]** Upon launching, JINBEIBLETON will automatically copy the required AbletonJS MIDI Remote Script folder into your User Library. No manual script installation is needed!
 3. Open (or restart) Ableton Live.
