@@ -51,21 +51,27 @@
       }
     },
     "dmg": {
+      "background": "electron_assets/dmg_background.png",
+      "iconSize": 120,
+      "window": {
+        "width": 600,
+        "height": 600
+      },
       "contents": [
         {
-          "x": 130,
-          "y": 220,
+          "x": 150,
+          "y": 300,
           "type": "file"
         },
         {
-          "x": 410,
-          "y": 220,
+          "x": 450,
+          "y": 300,
           "type": "link",
           "path": "/Applications"
         },
         {
-          "x": 270,
-          "y": 220,
+          "x": 300,
+          "y": 450,
           "type": "file",
           "path": "README_SETUP.txt"
         }
