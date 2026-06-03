@@ -39,7 +39,7 @@
       "electron_assets/**/*",
       "package.json",
       "StartApp.command",
-      "JINBEIBLETON_Manual.pdf"
+      "Manual.pdf"
     ],
     "asarUnpack": [
       "server/dist/**/*",
@@ -73,7 +73,7 @@
           "path": "/Applications"
         },
         {
-          "x": 150,
+          "x": 100,
           "y": 420,
           "type": "file",
           "path": "StartApp.command"
@@ -82,10 +82,10 @@
           "x": 300,
           "y": 420,
           "type": "file",
-          "path": "JINBEIBLETON_Manual.pdf"
+          "path": "Manual.pdf"
         },
         {
-          "x": 450,
+          "x": 500,
           "y": 420,
           "type": "file",
           "path": "README_SETUP.txt"
