@@ -13,26 +13,7 @@ echo "to the Applications folder."
 echo ""
 
 # ==========================================
-# Request administrator password ONCE upfront
-# ==========================================
-echo "🔑 Administrator password is required for installation."
-echo "   You will only need to enter it once."
-echo ""
-sudo -v
-
-if [ $? -ne 0 ]; then
-    echo "❌ Error: Administrator password is required to install."
-    echo "   Please re-run this script and enter your password."
-    read -p "Press Enter to exit..."
-    exit 1
-fi
-
-# Keep sudo alive in the background for the duration of this script
-while true; do sudo -n true; sleep 50; kill -0 "$$" || exit; done 2>/dev/null &
-SUDO_KEEPALIVE_PID=$!
-
-# ==========================================
-# 1. Check for Homebrew
+# 1. Check for Homebrew (Homebrew will ask for password internally if needed)
 # ==========================================
 if ! command -v brew &> /dev/null; then
     echo "📦 Homebrew not found. Installing..."
@@ -72,16 +53,27 @@ fi
 
 if [ -d "$APP_SOURCE" ]; then
     echo "📦 Copying JINBEIBLETON to /Applications..."
-    # Remove existing
-    sudo rm -rf "$APP_DEST"
-    # Copy new
-    sudo cp -R "$APP_SOURCE" "$APP_DEST"
+    
+    # Try to copy without sudo first
+    rm -rf "$APP_DEST" 2>/dev/null
+    cp -R "$APP_SOURCE" "$APP_DEST" 2>/dev/null
+    
+    # Check if copy succeeded
+    if [ $? -ne 0 ] || [ ! -d "$APP_DEST" ]; then
+        echo "🔒 Copying requires administrator privileges. Please enter your password:"
+        sudo rm -rf "$APP_DEST"
+        sudo cp -R "$APP_SOURCE" "$APP_DEST"
+        
+        # Ensure the owner remains the current user even if copied with sudo
+        CURRENT_USER=$(whoami)
+        sudo chown -R "$CURRENT_USER" "$APP_DEST"
+    fi
     
     # ==========================================
     # 4. Remove quarantine attribute (Bypass Gatekeeper)
     # ==========================================
     echo "🔐 Clearing Gatekeeper security restrictions..."
-    sudo xattr -cr "$APP_DEST"
+    xattr -cr "$APP_DEST" 2>/dev/null || sudo xattr -cr "$APP_DEST"
     
     # ==========================================
     # 5. Launch
@@ -93,9 +85,6 @@ else
     echo "❌ Error: 'JINBEIBLETON.app' not found in the same folder as this installer."
     echo "   Please run this script from the folder containing JINBEIBLETON.app."
 fi
-
-# Stop the sudo keepalive background process
-kill "$SUDO_KEEPALIVE_PID" 2>/dev/null
 
 echo ""
 echo "✅ Done! You can close this Terminal window."

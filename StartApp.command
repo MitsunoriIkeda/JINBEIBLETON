@@ -28,26 +28,11 @@ if [ ! -d "$APP_PATH" ]; then
     exit 1
 fi
 
-# 2. Bypass Gatekeeper quarantine (single sudo prompt for all operations)
+# 2. Bypass Gatekeeper quarantine (No sudo needed if the user owns the app)
 echo "🔒 Clearing macOS security restrictions..."
-echo "   (You may be asked for your password once.)"
-echo ""
-
-# Request sudo credentials once upfront — all subsequent sudo calls
-# will reuse the cached credentials within the timeout window.
-sudo -v 2>/dev/null
-
-if [ $? -eq 0 ]; then
-    # sudo was successful — use it for full quarantine removal
-    sudo xattr -d com.apple.quarantine "$APP_PATH" 2>/dev/null
-    sudo xattr -cr "$APP_PATH" 2>/dev/null
-    echo "✅ Security restrictions cleared successfully."
-else
-    # Fallback to non-sudo (may not work for all files)
-    echo "⚠️  Running without administrator privileges (may be incomplete)."
-    xattr -d com.apple.quarantine "$APP_PATH" 2>/dev/null
-    xattr -cr "$APP_PATH" 2>/dev/null
-fi
+xattr -d com.apple.quarantine "$APP_PATH" 2>/dev/null
+xattr -cr "$APP_PATH" 2>/dev/null
+echo "✅ Security restrictions cleared."
 
 # 3. Launch App
 echo ""
