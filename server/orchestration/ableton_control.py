@@ -66,15 +66,99 @@ def prepare_ableton_actions(actions, text):
         actions = [a for a in actions if a.get("action") not in ["play", "play_from_bar", "play_from_marker", "play_from_time"]]
         print(f"🛡 [GUARD] Stripped redundant play commands: {actions}")
     
-    # 4. DEVICE NAME NORMALIZER: Ensure correct naming for Chorus and Massive
+    # 4. DEVICE NAME NORMALIZER: Comprehensive mapping for all Ableton devices
     def normalize_devices(acts):
+        # Map of lowercase keywords -> correct Ableton device name
+        device_alias_map = {
+            # === INSTRUMENTS ===
+            "drum rack": "Drum Rack",
+            "drumrack": "Drum Rack",
+            "drums": "Drum Rack",
+            "drum sampler": "Drum Sampler",
+            "simpler": "Simpler",
+            "sampler": "Sampler",
+            "analog": "Analog",
+            "collision": "Collision",
+            "drift": "Drift",
+            "electric": "Electric",
+            "impulse": "Impulse",
+            "meld": "Meld",
+            "operator": "Operator",
+            "tension": "Tension",
+            "wavetable": "Wavetable",
+            "instrument rack": "Instrument Rack",
+            "external instrument": "External Instrument",
+            # === AUDIO EFFECTS ===
+            "compressor": "Compressor",
+            "reverb": "Reverb",
+            "eq eight": "EQ Eight",
+            "eq8": "EQ Eight",
+            "eq 8": "EQ Eight",
+            "eq three": "EQ Three",
+            "eq3": "EQ Three",
+            "eq 3": "EQ Three",
+            "delay": "Delay",
+            "echo": "Echo",
+            "saturator": "Saturator",
+            "limiter": "Limiter",
+            "chorus-ensemble": "Chorus-Ensemble",
+            "chorus ensemble": "Chorus-Ensemble",
+            "chorus": "Chorus-Ensemble",
+            "auto filter": "Auto Filter",
+            "autofilter": "Auto Filter",
+            "auto pan": "Auto Pan",
+            "autopan": "Auto Pan",
+            "gate": "Gate",
+            "glue compressor": "Glue Compressor",
+            "glue": "Glue Compressor",
+            "multiband dynamics": "Multiband Dynamics",
+            "multiband": "Multiband Dynamics",
+            "flanger": "Flanger",
+            "phaser": "Phaser",
+            "frequency shifter": "Frequency Shifter",
+            "redux": "Redux",
+            "vocoder": "Vocoder",
+            "utility": "Utility",
+            "tuner": "Tuner",
+            "spectrum": "Spectrum",
+            "audio effect rack": "Audio Effect Rack",
+            "effect rack": "Audio Effect Rack",
+            "beat repeat": "Beat Repeat",
+            "looper": "Looper",
+            "pedal": "Pedal",
+            "amp": "Amp",
+            "cabinet": "Cabinet",
+            "erosion": "Erosion",
+            "corpus": "Corpus",
+            "resonators": "Resonators",
+            "grain delay": "Grain Delay",
+            "drum buss": "Drum Buss",
+            "drum bus": "Drum Buss",
+            "channel eq": "Channel EQ",
+            "spectral resonator": "Spectral Resonator",
+            "spectral time": "Spectral Time",
+            "hybrid reverb": "Hybrid Reverb",
+            "drift echo": "Drift Echo",
+            "pitchhack": "PitchHack",
+            # === 3RD PARTY ===
+            "massive": "Massive",
+            "serum": "Serum",
+        }
+
         for a in acts:
             if a.get("action") == "load_device" and "name" in a:
-                dev_name = str(a["name"]).lower().strip()
-                if "massive" in dev_name:
-                    a["name"] = "Massive"
-                elif dev_name in ["コーラス", "chorus", "chorus-ensemble", "chorus ensemble"]:
-                    a["name"] = "Chorus-Ensemble"
+                dev_name = str(a["name"]).strip()
+                dev_lower = dev_name.lower()
+                
+                # Direct match
+                if dev_lower in device_alias_map:
+                    a["name"] = device_alias_map[dev_lower]
+                else:
+                    # Substring/fuzzy match for partial names
+                    for alias, correct_name in device_alias_map.items():
+                        if alias in dev_lower or dev_lower in alias:
+                            a["name"] = correct_name
+                            break
         return acts
 
     actions = normalize_devices(actions)

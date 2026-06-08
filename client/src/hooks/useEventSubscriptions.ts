@@ -23,6 +23,7 @@ interface EventSubscriptionsProps {
     isMixing: boolean;
     setIsMixing: (val: boolean) => void;
     setIsServerConnected: (val: boolean) => void;
+    handleCancelAll: () => void;
 }
 
 export const useEventSubscriptions = (props: EventSubscriptionsProps) => {
@@ -327,6 +328,10 @@ export const useEventSubscriptions = (props: EventSubscriptionsProps) => {
             }
         };
 
+        const handleTriggerCancel = () => {
+            propsRef.current.handleCancelAll();
+        };
+
         eventBus.on(EVENTS.STATUS_UPDATE, handleStatusUpdate);
         eventBus.on(EVENTS.VOICE_RESULT, handleVoiceResult);
         eventBus.on(EVENTS.TOGGLE_BGM, handleToggleBgm);
@@ -335,6 +340,7 @@ export const useEventSubscriptions = (props: EventSubscriptionsProps) => {
         eventBus.on(EVENTS.HUMMING_STARTED, handleHummingStarted);
         eventBus.on(EVENTS.HUMMING_STOPPED, handleHummingStopped);
         eventBus.on(EVENTS.COMMAND_COMPLETE, handleCommandComplete);
+        eventBus.on(EVENTS.TRIGGER_CANCEL, handleTriggerCancel);
         eventBus.on(EVENTS.DOG_ADVICE, (advice: string) => {
             const p = propsRef.current;
             p.setVoiceText(`🐶 ${advice}`);
@@ -360,6 +366,7 @@ export const useEventSubscriptions = (props: EventSubscriptionsProps) => {
             eventBus.off(EVENTS.HUMMING_STARTED, handleHummingStarted);
             eventBus.off(EVENTS.HUMMING_STOPPED, handleHummingStopped);
             eventBus.off(EVENTS.COMMAND_COMPLETE, handleCommandComplete);
+            eventBus.off(EVENTS.TRIGGER_CANCEL, handleTriggerCancel);
         };
     }, []); 
 };

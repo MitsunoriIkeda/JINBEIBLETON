@@ -158,7 +158,8 @@ const App: React.FC = () => {
         handleDismissSample, handleDismissMidi,
         toggleBgm, latestSample, latestMidi,
         isMixing, setIsMixing,
-        setIsServerConnected
+        setIsServerConnected,
+        handleCancelAll
     });
 
     return (

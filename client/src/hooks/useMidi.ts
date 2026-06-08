@@ -77,6 +77,17 @@ export const useMidi = () => {
                             break;
                         case 'p-green':
                             eventBus.emit(EVENTS.TRIGGER_SYNC);
+                            // Momentary switch: Immediately reset active state after triggering
+                            setTimeout(() => {
+                                eventBus.emit(EVENTS.SET_ACTIVE_MODULE, null);
+                            }, 200);
+                            break;
+                        case 'pink':
+                            eventBus.emit(EVENTS.TRIGGER_CANCEL);
+                            eventBus.emit(EVENTS.SET_ACTIVE_MODULE, 'pink');
+                            setTimeout(() => {
+                                eventBus.emit(EVENTS.SET_ACTIVE_MODULE, null);
+                            }, 200);
                             break;
                         // Add more cases here as needed
                     }

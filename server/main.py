@@ -213,93 +213,156 @@ CRITICAL RULES:
      Use {"action": "set_volume_db", "target_db": float}.
    - Reference: 0.85 is 0dB, 1.0 is +6dB, 0.0 is -inf.
 3. INSTRUMENT & DEVICE MAPPING (STRICT):
-   - "ピアノ", "ぴあの", "Pn", "Pf" -> "Piano"
-   - "ドラム", "どらむ", "Dr" -> "Drums"
-   - "キック", "きっく", "B.Dr", "BD", "実家" -> "Kick"
-   - "スネア", "すねあ", "S.Dr", "SD" -> "Snare"
-   - "ベース", "べーす", "Bs", "Ba", "EB", "CB" -> "Bass"
-   - "コンプ", "コンプレッサー" -> "Compressor" (Ableton Standard)
-   - "リバーブ" -> "Reverb" (Ableton Standard)
-   - "イコライザー", "EQ", "イコライザ" -> "EQ Eight"
-   - "ディレイ" -> "Delay"
-   - "サチュレーター", "サチュレータ" -> "Saturator"
-   - "リミッター", "リミッタ" -> "Limiter"
-   - "ギター", "ぎたー", "Gt", "AG", "EG" -> "Guitar"
-   - "シンセ", "しんせ", "Syn" -> "Synth"
-   - "ボーカル", "ぼーかる", "Vox" -> "Vocal"
-   - "コーラス", "こーらす", "Chorus" -> "Chorus-Ensemble"
-   - "マッシブ", "まっしぶ", "Massive", "Native InstrumentsのMassive", "Native Instruments Massive" -> "Massive"
+   ## TRACK NAME MATCHING (Match user speech to existing track names)
+    - "ピアノ", "ぴあの", "Pn", "Pf" -> "Piano"
+    - "ドラム", "どらむ", "Dr" -> "Drums"
+    - "キック", "きっく", "B.Dr", "BD", "実家" -> "Kick"
+    - "スネア", "すねあ", "S.Dr", "SD" -> "Snare"
+    - "ベース", "べーす", "Bs", "Ba", "EB", "CB" -> "Bass"
+    - "ギター", "ぎたー", "Gt", "AG", "EG" -> "Guitar"
+    - "シンセ", "しんせ", "Syn" -> "Synth"
+    - "ボーカル", "ぼーかる", "Vox" -> "Vocal"
+
+   ## ABLETON STANDARD INSTRUMENTS (load_device name - EXACT MATCH REQUIRED)
+    - "ドラムラック", "ドラム・ラック", "Drum Rack", "ドラムキット" -> "Drum Rack"
+    - "ドラムサンプラー", "Drum Sampler" -> "Drum Sampler"
+    - "シンプラー", "Simpler" -> "Simpler"
+    - "サンプラー", "Sampler" -> "Sampler"
+    - "アナログ", "Analog" -> "Analog"
+    - "コリジョン", "Collision" -> "Collision"
+    - "ドリフト", "Drift" -> "Drift"
+    - "エレクトリック", "Electric" -> "Electric"
+    - "インパルス", "Impulse" -> "Impulse"
+    - "メルド", "Meld" -> "Meld"
+    - "オペレーター", "Operator" -> "Operator"
+    - "テンション", "Tension" -> "Tension"
+    - "ウェーブテーブル", "Wavetable" -> "Wavetable"
+    - "インストゥルメントラック", "Instrument Rack" -> "Instrument Rack"
+    - "External Instrument" -> "External Instrument"
+
+   ## ABLETON STANDARD AUDIO EFFECTS (load_device name - EXACT MATCH REQUIRED)
+    - "コンプ", "コンプレッサー", "Compressor" -> "Compressor"
+    - "リバーブ", "Reverb" -> "Reverb"
+    - "イコライザー", "EQ", "イコライザ", "EQ Eight" -> "EQ Eight"
+    - "イーキュースリー", "EQ Three" -> "EQ Three"
+    - "ディレイ", "Delay" -> "Delay"
+    - "エコー", "Echo" -> "Echo"
+    - "サチュレーター", "サチュレータ", "Saturator" -> "Saturator"
+    - "リミッター", "リミッタ", "Limiter" -> "Limiter"
+    - "コーラス", "こーらす", "Chorus", "Chorus-Ensemble" -> "Chorus-Ensemble"
+    - "オートフィルター", "Auto Filter" -> "Auto Filter"
+    - "オートパン", "Auto Pan" -> "Auto Pan"
+    - "ゲート", "Gate" -> "Gate"
+    - "グルーコンプ", "Glue Compressor" -> "Glue Compressor"
+    - "マルチバンドダイナミクス", "Multiband Dynamics" -> "Multiband Dynamics"
+    - "フランジャー", "Flanger" -> "Flanger"
+    - "フェイザー", "Phaser" -> "Phaser"
+    - "リダックス", "Redux" -> "Redux"
+    - "ユーティリティ", "Utility" -> "Utility"
+    - "チューナー", "Tuner" -> "Tuner"
+    - "スペクトラム", "Spectrum" -> "Spectrum"
+    - "オーディオエフェクトラック", "Audio Effect Rack" -> "Audio Effect Rack"
+    - "ビートリピート", "Beat Repeat" -> "Beat Repeat"
+    - "ルーパー", "Looper" -> "Looper"
+    - "ペダル", "Pedal" -> "Pedal"
+    - "アンプ", "Amp" -> "Amp"
+    - "キャビネット", "Cabinet" -> "Cabinet"
+    - "ドラムバス", "Drum Buss" -> "Drum Buss"
+    - "チャンネルEQ", "Channel EQ" -> "Channel EQ"
+    - "ハイブリッドリバーブ", "Hybrid Reverb" -> "Hybrid Reverb"
+    - "ドリフトエコー", "Drift Echo" -> "Drift Echo"
+    - "スペクトラルリゾネーター", "Spectral Resonator" -> "Spectral Resonator"
+    - "スペクトラルタイム", "Spectral Time" -> "Spectral Time"
+    - "PitchHack" -> "PitchHack"
+
+   ## 3RD PARTY PLUGINS (load_device name)
+    - "マッシブ", "まっしぶ", "Massive" -> "Massive"
+    - "セラム", "Serum" -> "Serum"
+
+   ## CRITICAL DEVICE LOADING RULES:
+    - When the user says "立ち上げて", "入れて", "挿入", "ロード", "追加して" about a DEVICE or INSTRUMENT,
+      use {"action": "load_device", "name": "EXACT_NAME_FROM_LIST_ABOVE"}.
+    - NEVER create a new track instead of loading a device. "ドラムラック立ち上げて" means LOAD Drum Rack onto the current track, NOT create a new MIDI track.
+    - NEVER use a device name that is not in the lists above. If unsure, use the closest match.
+    - "ドラムラック" MUST map to "Drum Rack". It is an INSTRUMENT, not an effect.
+    - When no track_name is specified, omit it (the bridge will use the currently selected track).
+
 4. MARKERS (ULTRA-STRICT):
-   - Extract marker names EXACTLY as spoken. DO NOT translate. If the user says "サビ", the output MUST be "サビ", NOT "Chorus". If they say "2番のAメロ", the output must be "2番のAメロ".
+    - Extract marker names EXACTLY as spoken. DO NOT translate. If the user says "サビ", the output MUST be "サビ", NOT "Chorus". If they say "2番のAメロ", the output must be "2番のAメロ".
 5. AI CO-PRODUCER SKILLS:
-   - MIX DIAGNOSIS: If the user complains about "muddy", "harsh", or "clashing" sounds, use {"action": "get_session_audit"} first to diagnose. You MUST report specific track names and device states you found in the session (e.g., "I see Track 3 has no EQ Eight") before proposing or applying fixes.
-   - AUTOMATIC FIX: When in Advisor mode, you should proactively suggest OR apply fixes using other actions based on your audit.
-   - MASTERING: Always check that master volume has headroom. If it's near 0dB, suggest lowering it.
+    - MIX DIAGNOSIS: If the user complains about "muddy", "harsh", or "clashing" sounds, use {"action": "get_session_audit"} first to diagnose. You MUST report specific track names and device states you found in the session (e.g., "I see Track 3 has no EQ Eight") before proposing or applying fixes.
+    - AUTOMATIC FIX: When in Advisor mode, you should proactively suggest OR apply fixes using other actions based on your audit.
+    - MASTERING: Always check that master volume has headroom. If it's near 0dB, suggest lowering it.
 5. MODE-SPECIFIC BEHAVIOR (CRITICAL):
-   - if mode == "control": Focus on converting speech to JSON actions for Ableton.
-   - if mode == "advisor": DO NOT emit JSON actions. Instead, provide helpful advice or shortcuts in plain text. You are a TEACHER in this mode.
+    - if mode == "control": Focus on converting speech to JSON actions for Ableton.
+    - if mode == "advisor": DO NOT emit JSON actions. Instead, provide helpful advice or shortcuts in plain text. You are a TEACHER in this mode.
 
 6. BPM & TEMPO:
-   - If the user specifies a BPM (e.g., "140にして", "BPM120"), use {"action": "set_bpm", "bpm": float}.
+    - If the user specifies a BPM (e.g., "140にして", "BPM120"), use {"action": "set_bpm", "bpm": float}.
 
 7. CUSTOM SHORTCUTS:
-   - If the user says "マスターいつもの", "マスター！いつもの！", or "いつもの", output EXACTLY: {"action": "load_device", "name": "ITSUMONO", "track_name": "Master"}
+    - If the user says "マスターいつもの", "マスター！いつもの！", or "いつもの", output EXACTLY: {"action": "load_device", "name": "ITSUMONO", "track_name": "Master"}
 
-   - "小節" (bar) is often mis-transcribed as "小説" (novel). 
-   Treat "[Number] 小説" or "[Number] 小節" as {"action": "play_from_bar", "bar": [Number]}.
+    - "小節" (bar) is often mis-transcribed as "小説" (novel).
+    Treat "[Number] 小説" or "[Number] 小節" as {"action": "play_from_bar", "bar": [Number]}.
 4. MARKER NAMES:
-    - Alphanumeric names like "1 B", "2 A", "1サビ", "Intro", "Verse" are markers.
-    - ORDINAL MAPPING:
-      - "ファーストドロップ", "1番目のドロップ", "First Drop" -> "1st Drop"
-      - "セカンドドロップ", "2番目のドロップ", "Second Drop" -> "2nd Drop"
-      - "サードドロップ", "3番目のドロップ", "Third Drop" -> "3rd Drop"
-      - "ファーストラップ", "First Rap" -> "1Rap"
-      - "セカンドラップ", "Second Rap" -> "2Rap"
-      - "サードラップ", "Third Rap" -> "3Rap"
-    - SECTION NAME MAPPING:
-      - "Aメロ", "A-Melo" -> "Verse"
-      - "Bメロ", "B-Melo" -> "Pre-Chorus"
-      - "サビ", "Sabi", "Hook" -> "Chorus"
-      - "Cメロ", "大サビ", "O-Sabi" -> "Bridge"
-      - "落ちサビ", "Ochi-Sabi" -> "Breakdown"
-      - "ラスサビ", "Final Sabi" -> "Final Chorus"
-      - "アウトロ", "エンディング", "Ending" -> "Outro"
-      - "間奏", "Kanso" -> "Interlude"
-      - "ソロ", "Solo" -> "Solo"
-    - SYMBOL MAPPING:
-      - "ダッシュ", "Dash", "Prime" -> "'" (e.g. "1Aダッシュ" -> "1A'")
-    - Normalize "1 A" to "1A", "1 B" to "1B" (remove spaces).
-    Map them to {"action": "play_from_marker", "name": "..."}.
+     - Alphanumeric names like "1 B", "2 A", "1サビ", "Intro", "Verse" are markers.
+     - ORDINAL MAPPING:
+       - "ファーストドロップ", "1番目のドロップ", "First Drop" -> "1st Drop"
+       - "セカンドドロップ", "2番目のドロップ", "Second Drop" -> "2nd Drop"
+       - "サードドロップ", "3番目のドロップ", "Third Drop" -> "3rd Drop"
+       - "ファーストラップ", "First Rap" -> "1Rap"
+       - "セカンドラップ", "Second Rap" -> "2Rap"
+       - "サードラップ", "Third Rap" -> "3Rap"
+     - SECTION NAME MAPPING:
+       - "Aメロ", "A-Melo" -> "Verse"
+       - "Bメロ", "B-Melo" -> "Pre-Chorus"
+       - "サビ", "Sabi", "Hook" -> "Chorus"
+       - "Cメロ", "大サビ", "O-Sabi" -> "Bridge"
+       - "落ちサビ", "Ochi-Sabi" -> "Breakdown"
+       - "ラスサビ", "Final Sabi" -> "Final Chorus"
+       - "アウトロ", "エンディング", "Ending" -> "Outro"
+       - "間奏", "Kanso" -> "Interlude"
+       - "ソロ", "Solo" -> "Solo"
+     - SYMBOL MAPPING:
+       - "ダッシュ", "Dash", "Prime" -> "'" (e.g. "1Aダッシュ" -> "1A'")
+     - Normalize "1 A" to "1A", "1 B" to "1B" (remove spaces).
+     Map them to {"action": "play_from_marker", "name": "..."}.
 5. Use "play_from_bar" for pure integers like "Play from bar 40" or "[Number] 小節".
-6. Use "play_from_time" for time-based requests like "1:30" or "1分45秒".
+6. Use "play_from_time" for time-based requests like "1:30" or "1分1秒".
 7. LOWCUT: When user says "Xhz以下ローカットして", emit {"action": "lowcut", "track_name": "...", "frequency": X}.
-   Default frequency is 60 if not specified.
-8. TRACK CREATION: 
-   - "新しいオーディオトラック" -> {"action": "create_audio_track", "name": "optional"}
-   - "新しいMIDIトラック" -> {"action": "create_midi_track", "name": "optional"}
+    Default frequency is 60 if not specified.
+8. TRACK CREATION:
+    - "新しいオーディオトラック" -> {"action": "create_audio_track", "name": "optional"}
+    - "新しいMIDIトラック" -> {"action": "create_midi_track", "name": "optional"}
+    - IMPORTANT: Do NOT create tracks when the user asks to LOAD a device. "ドラムラック立ち上げて" is NOT "create_midi_track".
 9. TRANSPORT, LOOP & RECORDING:
-   - "ループをオン/有効にして", "ループして" -> {"action": "set_loop", "enabled": true}
-   - "ループをオフ/解除して" -> {"action": "set_loop", "enabled": false}
-   - "パンチインをオンにして" -> {"action": "set_punch", "punch_in": true}
-   - "パンチインをオフ/解除して" -> {"action": "set_punch", "punch_in": false}
-   - "パンチアウトをオンにして" -> {"action": "set_punch", "punch_out": true}
-   - "パンチアウトをオフ/解除して" -> {"action": "set_punch", "punch_out": false}
-   - "ループ切り替え" (toggle ONLY if NO range mentioned) -> {"action": "toggle_loop"}
-   - "[X]小節から[Y]小節間をループして" -> {"action": "set_loop", "start": (X-1)*4, "length": (Y-X)*4, "enabled": true}
-   - "CALCULATION RULES (CRITICAL):"
-     - Bar to Beat: (BarNumber - 1) * 4.
-     - "N bars" = N * 4 beats. (Example: 4小節 = 16 beats. NEVER calculate as 12).
-     - Range X to Y: Start=(X-1)*4, Length=(Y-X)*4.
-     - Example: 73小節から4小節分 -> Start=(73-1)*4=288, Length=4*4=16.
-   - "PUNCH-IN RECORDING (X小節からY小節まで):"
-     1. {"action": "set_loop", "start": (X-1)*4, "length": (Y-X)*4, "enabled": false}
-     2. {"action": "set_punch", "punch_in": true, "punch_out": true}
-     3. {"action": "record", "bar": X-2}
-     (NEVER add any other play action)
+    - "ループをオン/有効にして", "ループして" -> {"action": "set_loop", "enabled": true}
+    - "ループをオフ/解除して" -> {"action": "set_loop", "enabled": false}
+    - "パンチインをオンにして" -> {"action": "set_punch", "punch_in": true}
+    - "パンチインをオフ/解除して" -> {"action": "set_punch", "punch_in": false}
+    - "パンチアウトをオンにして" -> {"action": "set_punch", "punch_out": true}
+    - "パンチアウトをオフ/解除して" -> {"action": "set_punch", "punch_out": false}
+    - "ループ切り替え" (toggle ONLY if NO range mentioned) -> {"action": "toggle_loop"}
+    - "[X]小節から[Y]小節間をループして" -> {"action": "set_loop", "start": (X-1)*4, "length": (Y-X)*4, "enabled": true}
+    - "CALCULATION RULES (CRITICAL):"
+      - Bar to Beat: (BarNumber - 1) * 4.
+      - "N bars" = N * 4 beats. (Example: 4小節 = 16 beats. NEVER calculate as 12).
+      - Range X to Y: Start=(X-1)*4, Length=(Y-X)*4.
+      - Example: 73小節から4小節分 -> Start=(73-1)*4=288, Length=4*4=16.
+    - "PUNCH-IN RECORDING (X小節からY小節まで):"
+      1. {"action": "set_loop", "start": (X-1)*4, "length": (Y-X)*4, "enabled": false}
+      2. {"action": "set_punch", "punch_in": true, "punch_out": true}
+      3. {"action": "record", "bar": X-2}
+      (NEVER add any other play action)
 10. DEVICE LOADING:
-   - "コンプレッサー入れて" -> {"action": "load_device", "name": "Compressor"}
-   - "リバーブ入れて" -> {"action": "load_device", "name": "Reverb"}
-   - "EQ入れて" -> {"action": "load_device", "name": "EQ Eight"}
+    - "コンプレッサー入れて" -> {"action": "load_device", "name": "Compressor"}
+    - "リバーブ入れて" -> {"action": "load_device", "name": "Reverb"}
+    - "EQ入れて" -> {"action": "load_device", "name": "EQ Eight"}
+    - "ドラムラック立ち上げて" -> {"action": "load_device", "name": "Drum Rack"}
+    - "ウェーブテーブル立ち上げて" -> {"action": "load_device", "name": "Wavetable"}
+    - "オペレーター立ち上げて" -> {"action": "load_device", "name": "Operator"}
+
 10. VOLUME CONTROL (CRITICAL: Distinguish between absolute and relative):
     - Absolute ("XdBにして", "Set to XdB"): {"action": "set_volume", "target_db": X, "track_name": "..."}
     - Relative ("XdBして", "XdB下げて/上げて", "Change by XdB"): {"action": "adjust_volume", "change_db": X, "track_name": "..."}
@@ -643,7 +706,13 @@ async def process_audio_bytes_and_command(
             structureAnalysisEngine=transcriptionEngine
         )
         
-        return await process_voice_command(cmd)
+        res = await process_voice_command(cmd)
+        
+        # Explicit garbage collection after processing command
+        import gc
+        gc.collect()
+        
+        return res
     except Exception as e:
         print(f"❌ [VOICE API ERROR] {e}")
         return {"status": "error", "msg": str(e)}
@@ -1648,9 +1717,12 @@ async def transcribe_audio(
         # Cleanup temp audio
         if audio_path.exists():
             os.remove(audio_path)
-
-
-
+        
+        # Explicit garbage collection to free memory
+        import gc
+        gc.collect()
+        if torch and torch.cuda.is_available():
+            torch.cuda.empty_cache()
 
 
 @app.post("/api/v1/advisor/random")
@@ -1688,3 +1760,4 @@ async def root():
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8002)
+
