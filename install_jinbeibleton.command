@@ -76,7 +76,9 @@ if [ -d "$APP_SOURCE" ]; then
     xattr -cr "$APP_DEST" 2>/dev/null || sudo xattr -cr "$APP_DEST"
     
     echo "✍️  Signing application components (bypassing 'Open anyway' prompts)..."
-    codesign --force --deep --sign - "$APP_DEST" 2>/dev/null || sudo codesign --force --deep --sign - "$APP_DEST"
+    # Ad-hoc sign the app as current user. If it fails, ignore and proceed to launch
+    # instead of triggering sudo prompts.
+    codesign --force --deep --sign - "$APP_DEST" 2>/dev/null || true
     
     # ==========================================
     # 5. Launch

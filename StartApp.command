@@ -34,9 +34,9 @@ xattr -d com.apple.quarantine "$APP_PATH" 2>/dev/null
 xattr -cr "$APP_PATH" 2>/dev/null
 
 echo "✍️  Signing application components (bypassing 'Open anyway' prompts)..."
-# Ad-hoc sign the entire app recursively to satisfy Apple Silicon arm64 code signature requirements.
-# This eliminates "Developer cannot be verified" dialogs for internal Python/Node executables.
-codesign --force --deep --sign - "$APP_PATH" 2>/dev/null
+# Ad-hoc sign the entire app recursively. If it fails, ignore and proceed to launch
+# instead of triggering sudo prompts.
+codesign --force --deep --sign - "$APP_PATH" 2>/dev/null || true
 
 echo "✅ Security restrictions cleared successfully."
 
