@@ -52,9 +52,6 @@
           "NSMicrophoneUsageDescription": "This application requires microphone access to record voice commands for controlling Ableton Live."
         }
       },
-      "pkg": {
-        "scripts": "electron/pkg-scripts"
-      },
     "win": {
       "icon": "electron_assets/icon.png",
       "target": ["nsis"]
