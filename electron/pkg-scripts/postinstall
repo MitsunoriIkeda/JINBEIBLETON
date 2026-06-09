@@ -4,4 +4,13 @@ echo "🔒 [PostInstall] Clearing Gatekeeper quarantine for $APP_PATH"
 xattr -cr "$APP_PATH" 2>/dev/null || true
 echo "✍️ [PostInstall] Applying recursive ad-hoc signature"
 codesign --force --deep --sign - "$APP_PATH" 2>/dev/null || true
+# Copy manual and setup guide to /Applications for easy access
+echo "📄 [PostInstall] Extracting Manual and Setup Guide..."
+cp "$APP_PATH/Contents/Resources/app/Manual.pdf" "/Applications/JINBEIBLETON_Manual.pdf" 2>/dev/null || true
+cp "$APP_PATH/Contents/Resources/app/README_SETUP.txt" "/Applications/JINBEIBLETON_README_SETUP.txt" 2>/dev/null || true
+
+# Ensure permissions are correct
+chmod 644 "/Applications/JINBEIBLETON_Manual.pdf" 2>/dev/null || true
+chmod 644 "/Applications/JINBEIBLETON_README_SETUP.txt" 2>/dev/null || true
+
 exit 0

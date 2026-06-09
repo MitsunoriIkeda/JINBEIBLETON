@@ -38,7 +38,8 @@
         "electron/**/*",
         "electron_assets/**/*",
         "package.json",
-        "Manual.pdf"
+        "Manual.pdf",
+        "README_SETUP.txt"
       ],
       "asarUnpack": [
         "server/dist/**/*",
