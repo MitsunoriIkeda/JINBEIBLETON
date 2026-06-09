@@ -13,7 +13,7 @@ echo "to the Applications folder."
 echo ""
 
 # ==========================================
-# 1. Check for Homebrew
+# 1. Check for Homebrew (Homebrew will ask for password internally if needed)
 # ==========================================
 if ! command -v brew &> /dev/null; then
     echo "📦 Homebrew not found. Installing..."
@@ -70,10 +70,13 @@ if [ -d "$APP_SOURCE" ]; then
     fi
     
     # ==========================================
-    # 4. Remove quarantine attribute
+    # 4. Remove quarantine attribute & Ad-hoc sign the app
     # ==========================================
     echo "🔐 Clearing Gatekeeper security restrictions..."
     xattr -cr "$APP_DEST" 2>/dev/null || sudo xattr -cr "$APP_DEST"
+    
+    echo "✍️  Signing application components (bypassing 'Open anyway' prompts)..."
+    codesign --force --deep --sign - "$APP_DEST" 2>/dev/null || sudo codesign --force --deep --sign - "$APP_DEST"
     
     # ==========================================
     # 5. Launch
