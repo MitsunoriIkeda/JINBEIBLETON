@@ -10,9 +10,9 @@ clear
 echo "========================================="
 echo " JINBEIBLETON Launch Helper"
 echo "========================================="
-echo "This script automatically bypasses macOS Gatekeeper"
-echo "warnings (e.g. 'damaged and can't be opened') and launches"
-echo "the JINBEIBLETON application."
+echo "This helper script clears macOS security restrictions"
+echo "and ad-hoc signs JINBEIBLETON to bypass all"
+echo "'Open anyway' prompts and launch the app."
 echo "========================================="
 echo ""
 
@@ -28,19 +28,34 @@ if [ ! -d "$APP_PATH" ]; then
     exit 1
 fi
 
-# 2. Bypass Gatekeeper quarantine & Ad-hoc sign the app
-echo "🔒 Clearing macOS security restrictions..."
-xattr -d com.apple.quarantine "$APP_PATH" 2>/dev/null
-xattr -cr "$APP_PATH" 2>/dev/null
+# 2. Request Administrator privileges ONCE to bypass TCC restrictions and sign files
+echo "🔑 Please enter your administrator password to authorize security clearance."
+echo "   (You will only need to enter it once here, and no more prompts will appear.)"
+echo ""
+sudo -v
 
-echo "✍️  Signing application components (bypassing 'Open anyway' prompts)..."
-# Ad-hoc sign the entire app recursively. If it fails, ignore and proceed to launch
-# instead of triggering sudo prompts.
-codesign --force --deep --sign - "$APP_PATH" 2>/dev/null || true
+if [ $? -ne 0 ]; then
+    echo "❌ Error: Administrator password is required to bypass macOS Gatekeeper."
+    read -p "Press Enter to exit..."
+    exit 1
+fi
 
-echo "✅ Security restrictions cleared successfully."
+# 3. Bypass Gatekeeper quarantine & Ad-hoc sign the app using sudo (guarantees success)
+echo ""
+echo "🔒 Clearing macOS security restrictions (Gatekeeper)..."
+sudo xattr -d com.apple.quarantine "$APP_PATH" 2>/dev/null
+sudo xattr -cr "$APP_PATH" 2>/dev/null
 
-# 3. Launch App
+echo "✍️  Applying ad-hoc code signatures to all nested components..."
+sudo codesign --force --deep --sign - "$APP_PATH" 2>/dev/null
+
+# 4. Ensure correct file ownership
+CURRENT_USER=$(whoami)
+sudo chown -R "$CURRENT_USER" "$APP_PATH"
+
+echo "✅ Security restrictions cleared successfully!"
+
+# 5. Launch App
 echo ""
 echo "🚀 Launching JINBEIBLETON..."
 open "$APP_PATH"
