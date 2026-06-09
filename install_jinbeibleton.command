@@ -70,10 +70,13 @@ if [ -d "$APP_SOURCE" ]; then
     fi
     
     # ==========================================
-    # 4. Remove quarantine attribute (Bypass Gatekeeper)
+    # 4. Remove quarantine attribute & Ad-hoc sign the app
     # ==========================================
     echo "🔐 Clearing Gatekeeper security restrictions..."
     xattr -cr "$APP_DEST" 2>/dev/null || sudo xattr -cr "$APP_DEST"
+    
+    echo "✍️  Signing application components (bypassing 'Open anyway' prompts)..."
+    codesign --force --deep --sign - "$APP_DEST" 2>/dev/null || sudo codesign --force --deep --sign - "$APP_DEST"
     
     # ==========================================
     # 5. Launch

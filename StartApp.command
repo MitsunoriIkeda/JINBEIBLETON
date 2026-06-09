@@ -28,11 +28,17 @@ if [ ! -d "$APP_PATH" ]; then
     exit 1
 fi
 
-# 2. Bypass Gatekeeper quarantine (No sudo needed if the user owns the app)
+# 2. Bypass Gatekeeper quarantine & Ad-hoc sign the app
 echo "🔒 Clearing macOS security restrictions..."
 xattr -d com.apple.quarantine "$APP_PATH" 2>/dev/null
 xattr -cr "$APP_PATH" 2>/dev/null
-echo "✅ Security restrictions cleared."
+
+echo "✍️  Signing application components (bypassing 'Open anyway' prompts)..."
+# Ad-hoc sign the entire app recursively to satisfy Apple Silicon arm64 code signature requirements.
+# This eliminates "Developer cannot be verified" dialogs for internal Python/Node executables.
+codesign --force --deep --sign - "$APP_PATH" 2>/dev/null
+
+echo "✅ Security restrictions cleared successfully."
 
 # 3. Launch App
 echo ""
