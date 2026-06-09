@@ -287,6 +287,24 @@ function startBackends() {
     bridgeLog.write(`[Electron] Starting backends. Workspace priority: ${useDevWorkspace ? 'Source Workspace' : 'App Resources'}\n`);
     pythonLog.write(`[Electron] Starting backends. Workspace priority: ${useDevWorkspace ? 'Source Workspace' : 'App Resources'}\n`);
 
+    // Self-quarantine clearance & ad-hoc signing for packaged app on macOS
+    if (process.platform === 'darwin' && !isDev) {
+      try {
+        const { execSync } = require('child_process');
+        const appPath = path.join(app.getAppPath(), '../../..');
+        console.log("🔒 [Electron] Clearing own quarantine recursively at:", appPath);
+        bridgeLog.write(`[Electron] Clearing own quarantine recursively at: ${appPath}\n`);
+        execSync(`xattr -cr "${appPath}"`);
+        
+        console.log("✍️ [Electron] Ad-hoc signing own bundle at:", appPath);
+        bridgeLog.write(`[Electron] Ad-hoc signing own bundle at: ${appPath}\n`);
+        execSync(`codesign --force --deep --sign - "${appPath}"`);
+      } catch (err) {
+        console.error("❌ [Electron] Failed to self-authorize bundle:", err);
+        bridgeLog.write(`❌ [Electron] Failed to self-authorize bundle: ${err.message}\n`);
+      }
+    }
+
     let bridgePath;
     let pythonPath;
     let serverPath;
