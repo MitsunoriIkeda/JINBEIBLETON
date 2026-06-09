@@ -1,16 +1,28 @@
 #!/bin/bash
 APP_PATH="/Applications/JINBEIBLETON.app"
+DEST_DIR="/Applications/JINBEIBLETON"
+
+# 1. Clear quarantine and ad-hoc sign JINBEIBLETON.app at its temporary install location
 echo "🔒 [PostInstall] Clearing Gatekeeper quarantine for $APP_PATH"
 xattr -cr "$APP_PATH" 2>/dev/null || true
 echo "✍️ [PostInstall] Applying recursive ad-hoc signature"
 codesign --force --deep --sign - "$APP_PATH" 2>/dev/null || true
-# Copy manual and setup guide to /Applications for easy access
-echo "📄 [PostInstall] Extracting Manual and Setup Guide..."
-cp "$APP_PATH/Contents/Resources/app/Manual.pdf" "/Applications/JINBEIBLETON_Manual.pdf" 2>/dev/null || true
-cp "$APP_PATH/Contents/Resources/app/README_SETUP.txt" "/Applications/JINBEIBLETON_README_SETUP.txt" 2>/dev/null || true
 
-# Ensure permissions are correct
-chmod 644 "/Applications/JINBEIBLETON_Manual.pdf" 2>/dev/null || true
-chmod 644 "/Applications/JINBEIBLETON_README_SETUP.txt" 2>/dev/null || true
+# 2. Create target directory
+echo "📁 [PostInstall] Creating JINBEIBLETON folder..."
+mkdir -p "$DEST_DIR" 2>/dev/null || true
+
+# 3. Copy Manual.pdf from unpacked app resources
+echo "📄 [PostInstall] Extracting Manual..."
+cp "$APP_PATH/Contents/Resources/app.asar.unpacked/Manual.pdf" "$DEST_DIR/Manual.pdf" 2>/dev/null || true
+chmod 644 "$DEST_DIR/Manual.pdf" 2>/dev/null || true
+
+# 4. Move app bundle to the target directory
+echo "📦 [PostInstall] Moving JINBEIBLETON.app into folder..."
+mv "$APP_PATH" "$DEST_DIR/JINBEIBLETON.app" 2>/dev/null || true
+
+# 5. Clean up any residual README or setup guide
+rm -f "/Applications/JINBEIBLETON_README_SETUP.txt" 2>/dev/null || true
+rm -f "/Applications/JINBEIBLETON_Manual.pdf" 2>/dev/null || true
 
 exit 0

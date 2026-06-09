@@ -38,12 +38,12 @@
         "electron/**/*",
         "electron_assets/**/*",
         "package.json",
-        "Manual.pdf",
-        "README_SETUP.txt"
+        "Manual.pdf"
       ],
       "asarUnpack": [
         "server/dist/**/*",
-        "server/node_bridge/**/*"
+        "server/node_bridge/**/*",
+        "Manual.pdf"
       ],
       "mac": {
         "icon": "electron_assets/icon.png",
