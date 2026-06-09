@@ -34,6 +34,7 @@ client/public/transcriptions/*
 server/third_party/
 server/temp_midi/
 server/temp_audio/
+server/temp/
 
 # Build / PyInstaller Artifacts
 server/build/

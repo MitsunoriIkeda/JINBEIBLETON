@@ -15,83 +15,76 @@
     "directories": {
       "output": "dist-app"
     },
-    "files": [
-      "client/dist/**/*",
-      "server/dist/jinbeibleton-server/**/*",
-      "server/node_bridge/**/*",
-      "server/node_bridge/node_modules/**/*",
-      "server/knowledge/**/*",
-      "server/orchestration/**/*.py",
-      "!server/orchestration/__pycache__/**/*",
-      "!server/venv/**/*",
-      "!server/build/**/*",
-      "!server/.hf_cache/**/*",
-      "!server/.mt3_checkpoints/**/*",
-      "!server/.pyinstaller_cache/**/*",
-      "!server/__pycache__/**/*",
-      "!server/*.pyc",
-      "!server/*.spec",
-      "!server/user_style_profile.json",
-      "!server/main.py",
-      "!server/download_local_model.py",
-      "!server/requirements.txt",
-      "electron/**/*",
-      "electron_assets/**/*",
-      "package.json",
-      "StartApp.command",
-      "Manual.pdf"
-    ],
-    "asarUnpack": [
-      "server/dist/**/*",
-      "server/node_bridge/**/*"
-    ],
-    "mac": {
-      "icon": "electron_assets/icon.png",
-      "target": ["dmg"],
-      "extendInfo": {
-        "NSMicrophoneUsageDescription": "This application requires microphone access to record voice commands for controlling Ableton Live."
-      }
-    },
-    "dmg": {
-      "title": "JINBEIBLETON Installer",
-      "background": "electron_assets/dmg_background.png",
-      "iconSize": 120,
-      "window": {
-        "width": 600,
-        "height": 600
-      },
-      "contents": [
-        {
-          "x": 150,
-          "y": 180,
-          "type": "file"
-        },
-        {
-          "x": 450,
-          "y": 180,
-          "type": "link",
-          "path": "/Applications"
-        },
-        {
-          "x": 100,
-          "y": 420,
-          "type": "file",
-          "path": "StartApp.command"
-        },
-        {
-          "x": 300,
-          "y": 420,
-          "type": "file",
-          "path": "Manual.pdf"
-        },
-        {
-          "x": 500,
-          "y": 420,
-          "type": "file",
-          "path": "README_SETUP.txt"
+      "files": [
+        "client/dist/**/*",
+        "server/dist/jinbeibleton-server/**/*",
+        "server/node_bridge/**/*",
+        "server/node_bridge/node_modules/**/*",
+        "server/knowledge/**/*",
+        "server/orchestration/**/*.py",
+        "!server/orchestration/__pycache__/**/*",
+        "!server/venv/**/*",
+        "!server/build/**/*",
+        "!server/.hf_cache/**/*",
+        "!server/.mt3_checkpoints/**/*",
+        "!server/.pyinstaller_cache/**/*",
+        "!server/__pycache__/**/*",
+        "!server/*.pyc",
+        "!server/*.spec",
+        "!server/user_style_profile.json",
+        "!server/main.py",
+        "!server/download_local_model.py",
+        "!server/requirements.txt",
+        "electron/**/*",
+        "electron_assets/**/*",
+        "package.json",
+        "Manual.pdf"
+      ],
+      "asarUnpack": [
+        "server/dist/**/*",
+        "server/node_bridge/**/*"
+      ],
+      "mac": {
+        "icon": "electron_assets/icon.png",
+        "target": ["dmg"],
+        "extendInfo": {
+          "NSMicrophoneUsageDescription": "This application requires microphone access to record voice commands for controlling Ableton Live."
         }
-      ]
-    },
+      },
+      "dmg": {
+        "title": "JINBEIBLETON Installer",
+        "background": "electron_assets/dmg_background.png",
+        "iconSize": 120,
+        "window": {
+          "width": 600,
+          "height": 600
+        },
+        "contents": [
+          {
+            "x": 150,
+            "y": 180,
+            "type": "file"
+          },
+          {
+            "x": 450,
+            "y": 180,
+            "type": "link",
+            "path": "/Applications"
+          },
+          {
+            "x": 200,
+            "y": 420,
+            "type": "file",
+            "path": "Manual.pdf"
+          },
+          {
+            "x": 400,
+            "y": 420,
+            "type": "file",
+            "path": "README_SETUP.txt"
+          }
+        ]
+      },
     "win": {
       "icon": "electron_assets/icon.png",
       "target": ["nsis"]
