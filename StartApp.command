@@ -7,13 +7,11 @@ APP_PATH="/Applications/JINBEIBLETON.app"
 printf "\033]0;JINBEIBLETON Launch Helper\007"
 clear
 
-echo "========================================="
-echo " JINBEIBLETON Launch Helper"
-echo "========================================="
-echo "This helper script clears macOS security restrictions"
-echo "and ad-hoc signs JINBEIBLETON to bypass all"
-echo "'Open anyway' prompts and launch the app."
-echo "========================================="
+echo "================================================="
+echo "  JINBEIBLETON LAUNCH HELPER [CHIHUAHUA EDITION]"
+echo "================================================="
+echo "Checking and clearing macOS security restrictions..."
+echo "================================================="
 echo ""
 
 # 1. Check if the app is copied to Applications folder
@@ -30,7 +28,7 @@ fi
 
 # 2. Request Administrator privileges ONCE to bypass TCC restrictions and sign files
 echo "🔑 Please enter your administrator password to authorize security clearance."
-echo "   (You will only need to enter it once here, and no more prompts will appear.)"
+echo "   (You will only need to enter it once here.)"
 echo ""
 sudo -v
 
@@ -42,17 +40,22 @@ fi
 
 # 3. Bypass Gatekeeper quarantine & Ad-hoc sign the app using sudo (guarantees success)
 echo ""
-echo "🔒 Clearing macOS security restrictions (Gatekeeper)..."
+echo "🔒 [1/3] Clearing macOS Gatekeeper quarantine..."
 sudo xattr -d com.apple.quarantine "$APP_PATH" 2>/dev/null
-sudo xattr -cr "$APP_PATH" 2>/dev/null
+sudo xattr -cr "$APP_PATH"
 
-echo "✍️  Applying ad-hoc code signatures to all nested components..."
-sudo codesign --force --deep --sign - "$APP_PATH" 2>/dev/null
+echo ""
+echo "✍️  [2/3] Applying ad-hoc code signatures..."
+# We remove 2>/dev/null so that if codesign fails, the exact error is visible in the terminal
+sudo codesign --force --deep --sign - "$APP_PATH"
 
 # 4. Ensure correct file ownership
+echo ""
+echo "🔑 [3/3] Restoring user file ownership..."
 CURRENT_USER=$(whoami)
 sudo chown -R "$CURRENT_USER" "$APP_PATH"
 
+echo ""
 echo "✅ Security restrictions cleared successfully!"
 
 # 5. Launch App

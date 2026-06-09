@@ -5,7 +5,7 @@
 # ==========================================
 
 echo "=========================================="
-echo "    JINBEIBLETON Installer"
+echo "  JINBEIBLETON INSTALLER [CHIHUAHUA EDITION]"
 # ==========================================
 echo "This script installs the required system tools"
 echo "(Homebrew, ffmpeg) and copies JINBEIBLETON"
@@ -17,7 +17,7 @@ echo ""
 # Request administrator password ONCE upfront
 # ==========================================
 echo "🔑 Administrator password is required for installation."
-echo "   (You will only need to enter it once here, and no more prompts will appear.)"
+echo "   (You will only need to enter it once here.)"
 echo ""
 sudo -v
 
@@ -32,7 +32,7 @@ while true; do sudo -n true; sleep 50; kill -0 "$$" || exit; done 2>/dev/null &
 SUDO_KEEPALIVE_PID=$!
 
 # ==========================================
-# 1. Check for Homebrew (Homebrew handles its own internal prompts if needed)
+# 1. Check for Homebrew
 # ==========================================
 if ! command -v brew &> /dev/null; then
     echo "📦 Homebrew not found. Installing..."
@@ -81,10 +81,11 @@ if [ -d "$APP_SOURCE" ]; then
     # 4. Remove quarantine attribute & Ad-hoc sign the app
     # ==========================================
     echo "🔐 Clearing Gatekeeper security restrictions..."
-    sudo xattr -cr "$APP_DEST" 2>/dev/null
+    sudo xattr -cr "$APP_DEST"
     
-    echo "✍️  Signing application components (bypassing 'Open anyway' prompts)..."
-    sudo codesign --force --deep --sign - "$APP_DEST" 2>/dev/null
+    echo "✍️  Signing application components..."
+    # We remove 2>/dev/null to make codesign errors visible
+    sudo codesign --force --deep --sign - "$APP_DEST"
     
     # Reset ownership of the installed app to the current user immediately
     CURRENT_USER=$(whoami)
