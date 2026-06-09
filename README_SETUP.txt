@@ -6,23 +6,24 @@ JINBEIBLETON v1.1.0 - Setup Guide & Manual / セットアップガイド & マ�
 JINBEIBLETONをご利用いただきありがとうございます！
 本アプリがAbleton Liveと通信し、AIでコントロールするためには、以下のセットアップが必要です。
 
-■ ステップ 1: アプリケーションの配置
-1. 「JINBEIBLETON-1.1.0-arm64.dmg」を開きます。
-2. 開いたウィンドウ内の「JINBEIBLETON」アプリを、Macの「アプリケーション (Applications)」フォルダにドラッグ＆ドロップしてコピーしてください。
-
-■ ステップ 2: 初回起動とセキュリティ制限の自動解除
-1. アプリケーションフォルダにコピーした「JINBEIBLETON」アプリを起動します。
+■ ステップ 1: アプリケーションのインストール
+1. ダウンロードした「JINBEIBLETON-1.1.0-arm64.pkg」を実行（ダブルクリック）します。
 
    ⚠️ 【重要】「開発元を検証できないため開けません」と表示される場合：
-   macOSのセキュリティ仕様（Gatekeeper）により、そのままダブルクリックすると起動がブロックされます。
-   以下の簡単な手順（macOS標準の回避策）で起動してください。
-
-     ① アプリケーションフォルダ内の「JINBEIBLETON」アプリを【右クリック（または Control キーを押しながらクリック）】します。
+   macOSのセキュリティ制限によりブロックされることがあります。その場合は、以下の簡単な方法で実行してください。
+     ① ダウンロードした「JINBEIBLETON-1.1.0-arm64.pkg」を【右クリック（または Control キーを押しながらクリック）】します。
      ② メニューから【開く】を選択します。
-     ③ 「開発元を検証できませんが、開きますか？」というダイアログが表示されるので、【開く】ボタンをクリックします。
+     ③ 警告が表示されますが、そのまま【開く】をクリックします。
+        （または、「システム設定 ＞ プライバシーとセキュリティ」の一番下にある【このまま開く】をクリックします）
 
-   ※この手順は【最初の1回のみ】必要です。起動すると、アプリ内部のプログラムが自身に対するセキュリティ解除（クアランティン属性の消去およびアドホック署名）を自動的に実行します。
-   ※2回目以降は、アプリを通常通り【ダブルクリックするだけ】で、管理者パスワードの要求やセキュリティ警告も一切なしで直接起動するようになります。
+2. インストーラー画面（ウィザード）が起動しますので、画面の指示に従ってインストールを完了してください。
+   （※インストール中に1度だけMacのログインパスワードの入力が求められます）
+
+3. インストーラーが、自動的にアプリ（JINBEIBLETON.app）を「アプリケーション」フォルダに安全に配置し、バックグラウンドですべてのセキュリティ解除（アドホック署名）を完了させます。
+
+■ ステップ 2: 初回起動と接続
+1. Macの「アプリケーション」フォルダから「JINBEIBLETON」アプリをダブルクリックして起動します。
+   （※インストーラーがすでにセキュリティ処理を完了しているため、エラー警告なしに1発で起動します！）
 
 2. **【自動化】** アプリが起動すると、Ableton Liveに必要な接続スクリプト（AbletonJS）が自動的にユーザーの「User Library/Remote Scripts」に配置されます！手動でコピーする必要はありません。
 3. 次に、Ableton Live を起動（または再起動）してください。
@@ -30,7 +31,7 @@ JINBEIBLETONをご利用いただきありがとうございます！
 5. 左側のタブから「Link, Tempo & MIDI」を選択します。
 6. 「Control Surface（コントロールサーフェス）」の空いている行のドロップダウンメニューから「AbletonJS」を選択してください。
    ※ Input / Output は「なし（None）」のままで問題ありません。
-7. 設定画面を閉じます。自動的にアプリ画面의 右上に「✅ Ableton Connected」と表示されれば接続成功です！
+7. 設定画面を閉じます。自動的にアプリ画面の右上に「✅ Ableton Connected」と表示されれば接続成功です！
 
 ■ ステップ 3: ローカルAIモデル（MLX MusicGen）の初回利用について
 - 初めて「LOCAL」エンジンでサンプル生成を行う際、アプリが自動的にHugging FaceからローカルAIモデルのウェイト（約3.5GB）をバックグラウンドでダウンロードします。
@@ -43,23 +44,20 @@ Welcome to JINBEIBLETON v1.1.0!
 To allow the AI to control Ableton Live, you need to set up the connection by following these steps:
 
 ■ Step 1: Install JINBEIBLETON
-1. Open "JINBEIBLETON-1.1.0-arm64.dmg".
-2. Drag and drop "JINBEIBLETON" into your Mac's "Applications" folder.
-
-■ Step 2: First Launch & Automatic Security Bypass
-1. Launch the "JINBEIBLETON" app in your Applications folder.
+1. Open (double-click) the downloaded "JINBEIBLETON-1.1.0-arm64.pkg" file.
 
    ⚠️ [CRITICAL] If macOS says "cannot be opened because the developer cannot be verified":
-   Due to macOS security policies (Gatekeeper), double-clicking the app directly for the first time will block the launch.
-   Please use the standard macOS workaround to open it:
-
-     ① [Right-click] (or hold Control and click) the "JINBEIBLETON" app icon in your Applications folder.
+   Gatekeeper might block it on the first launch. Please bypass this using the standard method:
+     ① [Right-click] (or hold Control and click) the "JINBEIBLETON-1.1.0-arm64.pkg" file.
      ② Select 【Open】 from the context menu.
-     ③ A dialog will appear asking "developer cannot be verified, are you sure you want to open it?". Click the 【Open】 button.
+     ③ Click 【Open】 on the warning dialog.
+        (Or click 【Open Anyway】 under "System Settings > Privacy & Security")
 
-   * Note: This right-click workaround is only required for the [very first launch]. Once launched, the app automatically removes its own quarantine attributes and ad-hoc signs all nested helper binaries.
-   * For all subsequent launches, you can open JINBEIBLETON by simply [double-clicking] it directly. No passwords or security warnings will appear.
+2. Follow the standard installation wizard. Enter your Mac login password when prompted.
+3. The installer will copy JINBEIBLETON to your Applications folder and automatically whitelist and ad-hoc sign all nested binaries under root privileges.
 
+■ Step 2: First Launch & Connection
+1. Go to your "Applications" folder and double-click "JINBEIBLETON" to launch it directly. No warnings or "damaged" errors will appear.
 2. **[Automated]** Upon launching, JINBEIBLETON will automatically copy the required AbletonJS MIDI Remote Script folder into your User Library. No manual script installation is needed!
 3. Open (or restart) Ableton Live.
 4. Open Settings / Preferences (Mac: Cmd + ,).

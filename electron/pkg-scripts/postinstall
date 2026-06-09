@@ -1,0 +1,7 @@
+#!/bin/bash
+APP_PATH="/Applications/JINBEIBLETON.app"
+echo "🔒 [PostInstall] Clearing Gatekeeper quarantine for $APP_PATH"
+xattr -cr "$APP_PATH" 2>/dev/null || true
+echo "✍️ [PostInstall] Applying recursive ad-hoc signature"
+codesign --force --deep --sign - "$APP_PATH" 2>/dev/null || true
+exit 0

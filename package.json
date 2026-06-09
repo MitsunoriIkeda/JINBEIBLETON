@@ -46,44 +46,13 @@
       ],
       "mac": {
         "icon": "electron_assets/icon.png",
-        "target": ["dmg"],
+        "target": ["pkg"],
         "extendInfo": {
           "NSMicrophoneUsageDescription": "This application requires microphone access to record voice commands for controlling Ableton Live."
         }
       },
-      "dmg": {
-        "title": "JINBEIBLETON Installer",
-        "background": "electron_assets/dmg_background.png",
-        "iconSize": 120,
-        "window": {
-          "width": 600,
-          "height": 600
-        },
-        "contents": [
-          {
-            "x": 150,
-            "y": 180,
-            "type": "file"
-          },
-          {
-            "x": 450,
-            "y": 180,
-            "type": "link",
-            "path": "/Applications"
-          },
-          {
-            "x": 200,
-            "y": 420,
-            "type": "file",
-            "path": "Manual.pdf"
-          },
-          {
-            "x": 400,
-            "y": 420,
-            "type": "file",
-            "path": "README_SETUP.txt"
-          }
-        ]
+      "pkg": {
+        "scripts": "electron/pkg-scripts"
       },
     "win": {
       "icon": "electron_assets/icon.png",
