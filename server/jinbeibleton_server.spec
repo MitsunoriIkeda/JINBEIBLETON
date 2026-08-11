@@ -98,6 +98,16 @@ try:
 except ImportError:
     pass
 
+# MuScriptor - Multi-Instrument SOTA Audio-to-MIDI (optional)
+try:
+    import muscriptor
+    hiddenimports += collect_submodules('muscriptor')
+    hiddenimports += collect_submodules('rotary_embedding_torch')
+    hiddenimports += collect_submodules('beat_this')
+    datas += collect_data_files('muscriptor')
+except ImportError:
+    pass
+
 a = Analysis(
     ['main.py'],
     pathex=[os.path.abspath('.')],
