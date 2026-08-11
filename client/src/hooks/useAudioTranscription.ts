@@ -3,7 +3,7 @@ import { useAppState } from './useAppState';
 
 export const useAudioTranscription = (setIsGenerating: (val: boolean) => void) => {
     const [isDragging, setIsDragging] = useState(false);
-    const { transcriptionEngine, midiEngine, geminiApiKey, currentBpm, setStatusMessage } = useAppState();
+    const { transcriptionEngine, midiEngine, geminiApiKey, hfToken, currentBpm, setStatusMessage } = useAppState();
 
     const uploadAudioForTranscription = async (file: File) => {
         setIsGenerating(true);
@@ -21,6 +21,7 @@ export const useAudioTranscription = (setIsGenerating: (val: boolean) => void) =
         formData.append('engine', transcriptionEngine);
         formData.append('bpm', currentBpm.toString());
         formData.append('is_humming', 'false');
+        formData.append('hf_token', hfToken);
         
         try {
             const resp = await fetch('http://localhost:8002/api/v1/transcribe', {

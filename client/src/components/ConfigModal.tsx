@@ -10,10 +10,10 @@ interface ConfigModalProps {
 export const ConfigModal: React.FC<ConfigModalProps> = ({ isOpen, onClose }) => {
     const { 
         voiceEngine, sampleEngine, transcriptionEngine, midiEngine,
-        geminiApiKey, openaiApiKey, claudeApiKey, ollamaModel,
+        geminiApiKey, openaiApiKey, claudeApiKey, hfToken, ollamaModel,
         localAiProvider, localAiBaseUrl, language, micDeviceId,
         setVoiceEngine, setSampleEngine, setTranscriptionEngine, setMidiEngine,
-        setGeminiApiKey, setOpenaiApiKey, setClaudeApiKey, setOllamaModel,
+        setGeminiApiKey, setOpenaiApiKey, setClaudeApiKey, setHfToken, setOllamaModel,
         setLocalAiProvider, setLocalAiBaseUrl, setLanguage, setMicDeviceId
     } = useAppState();
  
@@ -192,6 +192,10 @@ export const ConfigModal: React.FC<ConfigModalProps> = ({ isOpen, onClose }) => 
                             <div className="config-group" style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                                 <label className="retro-text label-small" style={{marginBottom: 0, whiteSpace: 'nowrap', width: '120px'}}>CLAUDE KEY:</label>
                                 <input type="password" value={claudeApiKey} onChange={(e) => setClaudeApiKey(e.target.value)} className="config-input retro-text" placeholder="SK-ANT-..." />
+                            </div>
+                            <div className="config-group" style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
+                                <label className="retro-text label-small" style={{marginBottom: 0, whiteSpace: 'nowrap', width: '120px'}}>HF TOKEN:</label>
+                                <input type="password" value={hfToken} onChange={(e) => setHfToken(e.target.value)} className="config-input retro-text" placeholder="hf_..." />
                             </div>
                             <button className="confirm-btn retro-text" onClick={onClose} style={{marginTop: '15px'}}>CONFIRM & APPLY</button>
 

@@ -17,6 +17,7 @@ interface AppState {
     geminiApiKey: string;
     openaiApiKey: string;
     claudeApiKey: string;
+    hfToken: string;
     voiceEngine: 'local_ollama' | 'cloud_gemini' | 'cloud_openai' | 'cloud_claude';
     sampleEngine: 'local_mlx' | 'cloud_lyria';
     transcriptionEngine: 'mt3' | 'giantmidi-piano' | 'muscriptor';
@@ -46,6 +47,7 @@ interface AppState {
     setGeminiApiKey: (key: string) => void;
     setOpenaiApiKey: (key: string) => void;
     setClaudeApiKey: (key: string) => void;
+    setHfToken: (token: string) => void;
     setVoiceEngine: (engine: 'local_ollama' | 'cloud_gemini' | 'cloud_openai' | 'cloud_claude') => void;
     setSampleEngine: (engine: 'local_mlx' | 'cloud_lyria') => void;
     setTranscriptionEngine: (engine: 'mt3' | 'giantmidi-piano' | 'muscriptor') => void;
@@ -80,6 +82,7 @@ export const useAppState = create<AppState>()(
             geminiApiKey: '',
             openaiApiKey: '',
             claudeApiKey: '',
+            hfToken: '',
             voiceEngine: 'local_ollama',
 
             sampleEngine: 'cloud_lyria',
@@ -110,6 +113,7 @@ export const useAppState = create<AppState>()(
             setGeminiApiKey: (key) => set({ geminiApiKey: key }),
             setOpenaiApiKey: (key) => set({ openaiApiKey: key }),
             setClaudeApiKey: (key) => set({ claudeApiKey: key }),
+            setHfToken: (token) => set({ hfToken: token }),
             setVoiceEngine: (engine) => set({ voiceEngine: engine }),
 
             setSampleEngine: (engine) => set({ sampleEngine: engine }),
@@ -148,6 +152,7 @@ export const useAppState = create<AppState>()(
                 geminiApiKey: state.geminiApiKey,
                 openaiApiKey: state.openaiApiKey,
                 claudeApiKey: state.claudeApiKey,
+                hfToken: state.hfToken,
                 voiceEngine: state.voiceEngine,
                 localAiProvider: state.localAiProvider,
                 localAiBaseUrl: state.localAiBaseUrl,

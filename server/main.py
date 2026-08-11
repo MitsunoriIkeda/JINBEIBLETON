@@ -1580,7 +1580,8 @@ async def transcribe_audio(
     file: UploadFile = File(...), 
     engine: str = Form("basic-pitch"), 
     bpm: float = Form(120.0),
-    is_humming: bool = Form(False)
+    is_humming: bool = Form(False),
+    hf_token: str = Form("")
 ):
     server_dir = Path(__file__).parent.absolute()
     temp_dir = server_dir / "temp"
@@ -1702,6 +1703,11 @@ async def transcribe_audio(
             if not MuScriptorModel:
                 return {"status": "error", "msg": "MuScriptor engine not installed on server. Install with: pip install muscriptor"}
             
+            # Pass HF Token if provided by UI or environment
+            if hf_token:
+                os.environ["HF_TOKEN"] = hf_token
+                print(f"🔑 [MUSCRIPTOR] Using user-provided HF TOKEN.")
+            
             print(f"🧠 [TRANSCRIBE] Running MuScriptor Inference (Multi-Instrument SOTA)...")
             await manager.broadcast(json.dumps({
                 "type": "STATUS",
@@ -1717,12 +1723,20 @@ async def transcribe_audio(
                     print(f"✅ [MUSCRIPTOR] Model loaded successfully.")
                 return _muscriptor_model
             
-            model = await asyncio.to_thread(_ensure_muscriptor_model)
-            
-            # Transcribe audio to MIDI bytes
-            print(f"⏳ [MUSCRIPTOR] Model inference starting...")
-            midi_bytes = await asyncio.to_thread(model.transcribe_to_midi, str(audio_path))
-            print(f"✅ [MUSCRIPTOR] Inference complete. Processing MIDI...")
+            try:
+                model = await asyncio.to_thread(_ensure_muscriptor_model)
+                
+                # Transcribe audio to MIDI bytes
+                print(f"⏳ [MUSCRIPTOR] Model inference starting...")
+                midi_bytes = await asyncio.to_thread(model.transcribe_to_midi, str(audio_path))
+                print(f"✅ [MUSCRIPTOR] Inference complete. Processing MIDI...")
+            except Exception as musc_err:
+                err_text = str(musc_err)
+                print(f"❌ [MUSCRIPTOR ERROR] {err_text}")
+                if "download" in err_text.lower() or "huggingface" in err_text.lower() or "gated" in err_text.lower():
+                    friendly_msg = "cannot download 'MuScriptor/muscriptor-medium': HuggingFace認証が必要です。1) https://huggingface.co/MuScriptor/muscriptor-medium で規約同意 2) Config画面にHF TOKENを入力してください。"
+                    return {"status": "error", "msg": friendly_msg}
+                return {"status": "error", "msg": f"MuScriptor error: {err_text[:100]}"}
             
             # Load the raw MIDI output into pretty_midi
             midi_stream = io.BytesIO(midi_bytes)
