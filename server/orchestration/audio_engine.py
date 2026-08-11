@@ -109,7 +109,7 @@ async def transcribe_audio(audio_bytes: bytes, api_key: str = "", language: str 
                 contents=[
                     types.Part.from_bytes(
                         data=audio_bytes,
-                        mime_type='audio/webm'
+                        mime_type='audio/wav'
                     ),
                     types.Part.from_text(text=f"Transcribe this audio strictly. Language is {language}. Return ONLY the transcribed text, nothing else. If no speech is detected, return an empty string.")
                 ]
@@ -129,7 +129,7 @@ async def transcribe_audio(audio_bytes: bytes, api_key: str = "", language: str 
         
         # Save to temp file (mlx-whisper needs a file path)
         import tempfile
-        with tempfile.NamedTemporaryFile(suffix=".webm", delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
             tmp.write(audio_bytes)
             tmp_path = tmp.name
         
@@ -167,7 +167,7 @@ async def transcribe_audio(audio_bytes: bytes, api_key: str = "", language: str 
         print(f"🎙 [STT] Using faster-whisper LOCAL ({len(audio_bytes)} bytes)...")
         
         import tempfile
-        with tempfile.NamedTemporaryFile(suffix=".webm", delete=False) as tmp:
+        with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as tmp:
             tmp.write(audio_bytes)
             tmp_path = tmp.name
         

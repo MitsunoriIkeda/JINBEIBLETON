@@ -21,7 +21,8 @@ export const ConfigModal: React.FC<ConfigModalProps> = ({ isOpen, onClose }) => 
     const [availableMics, setAvailableMics] = useState<MediaDeviceInfo[]>([]);
     const [availableTranscribers, setAvailableTranscribers] = useState<{ [key: string]: boolean }>({
         'mt3': true,
-        'giantmidi-piano': true
+        'giantmidi-piano': true,
+        'muscriptor': true
     });
  
     useEffect(() => {
@@ -171,6 +172,12 @@ export const ConfigModal: React.FC<ConfigModalProps> = ({ isOpen, onClose }) => 
                                         onClick={() => availableTranscribers['giantmidi-piano'] && setTranscriptionEngine('giantmidi-piano')}
                                     >
                                         GIANTMIDI {availableTranscribers['giantmidi-piano'] ? '(PIANO)' : '(N/A)'}
+                                    </div>
+                                    <div 
+                                        className={`model-card ${transcriptionEngine === 'muscriptor' ? 'active' : ''} ${!availableTranscribers['muscriptor'] ? 'disabled' : ''}`} 
+                                        onClick={() => availableTranscribers['muscriptor'] && setTranscriptionEngine('muscriptor')}
+                                    >
+                                        MUSCRIPTOR {availableTranscribers['muscriptor'] ? '(MULTI-INST)' : '(N/A)'}
                                     </div>
                                 </div>
                             </div>

@@ -19,7 +19,7 @@ interface AppState {
     claudeApiKey: string;
     voiceEngine: 'local_ollama' | 'cloud_gemini' | 'cloud_openai' | 'cloud_claude';
     sampleEngine: 'local_mlx' | 'cloud_lyria';
-    transcriptionEngine: 'mt3' | 'giantmidi-piano';
+    transcriptionEngine: 'mt3' | 'giantmidi-piano' | 'muscriptor';
     midiEngine: 'local_ollama' | 'cloud_gemini' | 'cloud_openai' | 'cloud_claude';
     ollamaModel: string;
     localAiProvider: 'ollama' | 'lm-studio' | 'custom';
@@ -48,7 +48,7 @@ interface AppState {
     setClaudeApiKey: (key: string) => void;
     setVoiceEngine: (engine: 'local_ollama' | 'cloud_gemini' | 'cloud_openai' | 'cloud_claude') => void;
     setSampleEngine: (engine: 'local_mlx' | 'cloud_lyria') => void;
-    setTranscriptionEngine: (engine: 'mt3' | 'giantmidi-piano') => void;
+    setTranscriptionEngine: (engine: 'mt3' | 'giantmidi-piano' | 'muscriptor') => void;
     setMidiEngine: (engine: 'local_ollama' | 'cloud_gemini' | 'cloud_openai' | 'cloud_claude') => void;
     setOllamaModel: (model: string) => void;
     setLocalAiProvider: (provider: 'ollama' | 'lm-studio' | 'custom') => void;

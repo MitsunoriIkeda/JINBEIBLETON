@@ -41,6 +41,9 @@ safetensors
 tokenizers
 einops
 
+# Audio-to-MIDI (MuScriptor - Multi-Instrument SOTA)
+muscriptor
+
 # Utilities
 huggingface_hub
 psutil

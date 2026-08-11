@@ -10,6 +10,7 @@ export const useAudioTranscription = (setIsGenerating: (val: boolean) => void) =
         let statusText = ">>> ANALYZING AUDIO CONTENT...";
         if (transcriptionEngine === 'mt3') statusText = ">>> MT3 PRECISION ANALYZING...";
         if (transcriptionEngine === 'giantmidi-piano') statusText = ">>> GIANTMIDI-PIANO CONVERTING...";
+        if (transcriptionEngine === 'muscriptor') statusText = ">>> MUSCRIPTOR MULTI-INSTRUMENT ANALYZING...";
         setStatusMessage(statusText);
         
         const formData = new FormData();

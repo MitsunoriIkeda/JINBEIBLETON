@@ -37,6 +37,15 @@ except ImportError:
     PianoTranscription = None
     print("⚠️ [SYSTEM] GiantMIDI-Piano not found. Install with: pip install piano_transcription_inference")
 
+try:
+    from muscriptor import TranscriptionModel as MuScriptorModel
+    _muscriptor_model = None
+    print("✅ [SYSTEM] MuScriptor found.")
+except ImportError:
+    MuScriptorModel = None
+    _muscriptor_model = None
+    print("⚠️ [SYSTEM] MuScriptor not found. Install with: pip install muscriptor")
+
 def ensure_giantmidi_model():
     """Manually download GiantMIDI model if wget is missing or download failed."""
     if not PianoTranscription:
@@ -641,9 +650,11 @@ async def process_audio_bytes_and_command(
         # --- ROBUST VOLUME GATE (Native peak detection) ---
         import numpy as np
         try:
-            raw_samples = np.frombuffer(audio_bytes, dtype=np.uint8)
+            # Trim to even length to prevent ValueError on 16-bit boundary
+            trimmed = audio_bytes[:len(audio_bytes) - (len(audio_bytes) % 2)] if len(audio_bytes) % 2 != 0 else audio_bytes
+            raw_samples = np.frombuffer(trimmed, dtype=np.int16)
             if len(raw_samples) > 0:
-                peak_heuristic = np.max(np.abs(raw_samples.astype(np.float32) - np.median(raw_samples))) / 128.0
+                peak_heuristic = np.max(np.abs(raw_samples.astype(np.float32))) / 32768.0
                 print(f"🎙 [AUDIO ANALYZER] Heuristic Peak: {peak_heuristic:.4f}")
                 
                 # Broadcast to UI meter
@@ -1686,6 +1697,49 @@ async def transcribe_audio(
             
             pm_new.write(str(midi_path))
             notes_count = sum(len(track.notes) for track in pm_new.instruments)
+        elif engine == "muscriptor":
+            global _muscriptor_model
+            if not MuScriptorModel:
+                return {"status": "error", "msg": "MuScriptor engine not installed on server. Install with: pip install muscriptor"}
+            
+            print(f"🧠 [TRANSCRIBE] Running MuScriptor Inference (Multi-Instrument SOTA)...")
+            await manager.broadcast(json.dumps({
+                "type": "STATUS",
+                "msg": ">>> MUSCRIPTOR MULTI-INSTRUMENT ANALYSIS (WAITING...)"
+            }))
+            
+            # Lazy-load the model (singleton pattern)
+            def _ensure_muscriptor_model():
+                global _muscriptor_model
+                if _muscriptor_model is None:
+                    print(f"📦 [MUSCRIPTOR] Loading model (medium)... This may take a moment on first run.")
+                    _muscriptor_model = MuScriptorModel.load_model("medium")
+                    print(f"✅ [MUSCRIPTOR] Model loaded successfully.")
+                return _muscriptor_model
+            
+            model = await asyncio.to_thread(_ensure_muscriptor_model)
+            
+            # Transcribe audio to MIDI bytes
+            print(f"⏳ [MUSCRIPTOR] Model inference starting...")
+            midi_bytes = await asyncio.to_thread(model.transcribe_to_midi, str(audio_path))
+            print(f"✅ [MUSCRIPTOR] Inference complete. Processing MIDI...")
+            
+            # Load the raw MIDI output into pretty_midi
+            midi_stream = io.BytesIO(midi_bytes)
+            pm_source = pretty_midi.PrettyMIDI(midi_stream)
+            
+            # HIGH-PRECISION BPM RE-CONTAINERIZATION
+            pm_new = pretty_midi.PrettyMIDI(initial_tempo=bpm)
+            for inst in pm_source.instruments:
+                if is_humming:
+                    new_inst = make_monophonic(copy.deepcopy(inst))
+                    pm_new.instruments.append(new_inst)
+                else:
+                    pm_new.instruments.append(copy.deepcopy(inst))
+            
+            pm_new.write(str(midi_path))
+            notes_count = sum(len(track.notes) for track in pm_new.instruments)
+            print(f"✨ [MUSCRIPTOR] MIDI success: {notes_count} notes across {len(pm_new.instruments)} instruments")
         else:
             return {"status": "error", "msg": f"Unknown transcription engine: {engine}"}
         print(f"✨ [TRANSCRIBE] MIDI success ({engine}): {midi_path}")
@@ -1749,7 +1803,8 @@ async def get_system_status():
         "status": "online",
         "engines": {
             "mt3": mt3_transcribe is not None,
-            "giantmidi-piano": PianoTranscription is not None
+            "giantmidi-piano": PianoTranscription is not None,
+            "muscriptor": MuScriptorModel is not None
         }
     }
 
