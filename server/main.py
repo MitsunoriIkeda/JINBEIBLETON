@@ -1575,6 +1575,73 @@ def make_monophonic(instrument):
     instrument.notes = monophonic_notes
     return instrument
 
+def sync_and_align_midi(pm_source: pretty_midi.PrettyMIDI, audio_path: Path, target_bpm: float, is_humming: bool = False) -> pretty_midi.PrettyMIDI:
+    """
+    Auto-detects source audio tempo, scales MIDI timestamps to match target Ableton BPM,
+    aligns first note start to grid beat 1, and re-containerizes the MIDI cleanly.
+    """
+    source_tempo = None
+    try:
+        y, sr = librosa.load(str(audio_path), sr=22050, mono=True)
+        tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
+        if isinstance(tempo, (list, np.ndarray)):
+            source_tempo = float(tempo[0]) if len(tempo) > 0 else None
+        else:
+            source_tempo = float(tempo)
+    except Exception as te:
+        print(f"⚠️ [BPM DETECT WARNING] {te}")
+        
+    print(f"🎵 [MIDI SYNC] Ableton Target BPM: {target_bpm} | Detected Audio Tempo: {source_tempo}")
+    
+    scale_factor = 1.0
+    if source_tempo and source_tempo > 30 and target_bpm > 30:
+        ratio = source_tempo / target_bpm
+        while ratio < 0.65:
+            ratio *= 2.0
+            source_tempo *= 2.0
+        while ratio > 1.5:
+            ratio /= 2.0
+            source_tempo /= 2.0
+            
+        scale_factor = source_tempo / target_bpm
+        print(f"🎵 [MIDI SYNC] Adjusted Source Tempo: {source_tempo:.1f} BPM | Scale Factor: {scale_factor:.4f}")
+    
+    all_notes = [note for inst in pm_source.instruments for note in inst.notes]
+    if not all_notes:
+        return pretty_midi.PrettyMIDI(initial_tempo=target_bpm)
+
+    first_note_start = min(note.start for note in all_notes)
+    beat_sec = 60.0 / target_bpm
+    nearest_beat_k = round((first_note_start * scale_factor) / beat_sec)
+    target_first_beat_sec = nearest_beat_k * beat_sec
+    
+    offset_shift = (first_note_start * scale_factor) - target_first_beat_sec
+    print(f"🎵 [GRID ALIGN] First Note Start: {first_note_start:.3f}s -> Nearest Beat {nearest_beat_k + 1} ({target_first_beat_sec:.3f}s) | Shift: {offset_shift:+.3f}s")
+    
+    pm_synced = pretty_midi.PrettyMIDI(initial_tempo=target_bpm)
+    
+    for inst in pm_source.instruments:
+        new_inst = pretty_midi.Instrument(program=inst.program, is_drum=inst.is_drum, name=inst.name)
+        scaled_notes = []
+        for n in inst.notes:
+            new_start = max(0.0, (n.start * scale_factor) - offset_shift)
+            new_end = max(new_start + 0.05, (n.end * scale_factor) - offset_shift)
+            
+            scaled_notes.append(pretty_midi.Note(
+                velocity=n.velocity if n.velocity > 0 else 100,
+                pitch=n.pitch,
+                start=new_start,
+                end=new_end
+            ))
+            
+        new_inst.notes = scaled_notes
+        if is_humming:
+            new_inst = make_monophonic(new_inst)
+            
+        pm_synced.instruments.append(new_inst)
+        
+    return pm_synced
+
 @app.post("/api/v1/transcribe")
 async def transcribe_audio(
     file: UploadFile = File(...), 
@@ -1654,15 +1721,8 @@ async def transcribe_audio(
             pm_source = pretty_midi.PrettyMIDI(midi_stream)
             print(f"✨ [TRANSCRIBE] MIDI successfully re-containerized.")
             
-            # HIGH-PRECISION BPM RE-CONTAINERIZATION
-            pm_new = pretty_midi.PrettyMIDI(initial_tempo=bpm)
-            for inst in pm_source.instruments:
-                if is_humming:
-                    new_inst = make_monophonic(copy.deepcopy(inst))
-                    pm_new.instruments.append(new_inst)
-                else:
-                    pm_new.instruments.append(copy.deepcopy(inst))
-            
+            # HIGH-PRECISION BPM & GRID SYNC ALIGNMENT
+            pm_new = sync_and_align_midi(pm_source, audio_path, bpm, is_humming)
             pm_new.write(str(midi_path))
             notes_count = sum(len(track.notes) for track in pm_new.instruments)
         elif engine == "giantmidi-piano":
@@ -1687,15 +1747,8 @@ async def transcribe_audio(
             
             pm_source = await asyncio.to_thread(_run_giantmidi, audio_data, midi_path)
             
-            # RE-CONTAINERIZE FOR CONSISTENT BPM
-            pm_new = pretty_midi.PrettyMIDI(initial_tempo=bpm)
-            for inst in pm_source.instruments:
-                if is_humming:
-                    new_inst = make_monophonic(copy.deepcopy(inst))
-                    pm_new.instruments.append(new_inst)
-                else:
-                    pm_new.instruments.append(copy.deepcopy(inst))
-            
+            # HIGH-PRECISION BPM & GRID SYNC ALIGNMENT
+            pm_new = sync_and_align_midi(pm_source, audio_path, bpm, is_humming)
             pm_new.write(str(midi_path))
             notes_count = sum(len(track.notes) for track in pm_new.instruments)
         elif engine == "muscriptor":
@@ -1742,15 +1795,8 @@ async def transcribe_audio(
             midi_stream = io.BytesIO(midi_bytes)
             pm_source = pretty_midi.PrettyMIDI(midi_stream)
             
-            # HIGH-PRECISION BPM RE-CONTAINERIZATION
-            pm_new = pretty_midi.PrettyMIDI(initial_tempo=bpm)
-            for inst in pm_source.instruments:
-                if is_humming:
-                    new_inst = make_monophonic(copy.deepcopy(inst))
-                    pm_new.instruments.append(new_inst)
-                else:
-                    pm_new.instruments.append(copy.deepcopy(inst))
-            
+            # HIGH-PRECISION BPM & GRID SYNC ALIGNMENT
+            pm_new = sync_and_align_midi(pm_source, audio_path, bpm, is_humming)
             pm_new.write(str(midi_path))
             notes_count = sum(len(track.notes) for track in pm_new.instruments)
             print(f"✨ [MUSCRIPTOR] MIDI success: {notes_count} notes across {len(pm_new.instruments)} instruments")
